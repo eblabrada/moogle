@@ -43,14 +43,16 @@ public class NesCafe
     {
       IDF[term] = Math.Log((double)docs2.Length / Voc[term].Count());
     }
-    
-    for (int i = 0; i < docs2.Length; i++) {
+
+    for (int i = 0; i < docs2.Length; i++)
+    {
       Relevance.Add(new Dictionary<string, double>());
-      foreach (string term in TF[i].Keys) {
+      foreach (string term in TF[i].Keys)
+      {
         Relevance[i][term] = TF[i][term] * IDF[term];
       }
     }
-    
+
   }
 
   private void processDocuments(string doc, int index)
