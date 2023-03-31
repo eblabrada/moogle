@@ -103,20 +103,6 @@ public static class Moogle
   {
     // Modifique este método para responder a la búsqueda
 
-    {
-      // debug current work
-
-      Nescafe nc = new Nescafe("nescafe");
-
-      // int index = 0;
-      // foreach (var elem in nc.Relevance) {
-      //   Console.WriteLine(index++);
-      //   foreach (var e2 in elem) {
-      //     Console.WriteLine($"{e2.Key} {e2.Value}");
-      //   }
-      // }
-    }
-
     SearchItem[] items = new SearchItem[3] {
       new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.9f),
       new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.5f),
