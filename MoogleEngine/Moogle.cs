@@ -101,7 +101,7 @@ public class Nescafe
       {
         continue;
       }
-      
+
       if (!TF[index].ContainsKey(word)) TF[index].Add(word, 0.0);
       if (!Voc.ContainsKey(word)) Voc.Add(word, new List<int>());
 
@@ -148,7 +148,8 @@ public class Moogle
 {
   public static Nescafe allDocs = new Nescafe("nescafe");
 
-  public static SearchItem[] findItems(string query) {
+  public static SearchItem[] findItems(string query)
+  {
     Dictionary<string, double> QTF = new Dictionary<string, double>();
     Dictionary<string, double> QRelevance = new Dictionary<string, double>();
 
@@ -180,16 +181,19 @@ public class Moogle
     {
       items[i] = new SearchItem($"Document {i}", "palabra random", (float)allDocs.computeRelevance(ref QRelevance, i));
     }
-    
+
     // bubble sort
-    for (int i = 0; i < items.Length; i++) {
-      for (int j = i + 1; j < items.Length; j++) {
-        if (items[i].Score < items[j].Score) {
+    for (int i = 0; i < items.Length; i++)
+    {
+      for (int j = i + 1; j < items.Length; j++)
+      {
+        if (items[i].Score < items[j].Score)
+        {
           (items[i], items[j]) = (items[j], items[i]);
         }
       }
     }
-    
+
     return items;
   }
 
