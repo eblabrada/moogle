@@ -27,9 +27,7 @@ public static class Utils
     }
     return Math.Sqrt(res);
   }
-
 }
-
 public class Nescafe
 {
   public List<Dictionary<string, double>> TF = new List<Dictionary<string, double>>();
@@ -148,7 +146,7 @@ public class Moogle
 {
   public static Nescafe allDocs = new Nescafe("nescafe");
 
-  public static SearchItem[] findItems(string query)
+  public static List<(double, int)> findItems(string query)
   {
     Dictionary<string, double> QTF = new Dictionary<string, double>();
     Dictionary<string, double> QRelevance = new Dictionary<string, double>();
@@ -176,30 +174,29 @@ public class Moogle
       QRelevance[term] = QTF[term] * allDocs.IDF[term];
     }
 
-    SearchItem[] items = new SearchItem[allDocs.numDocs];
+    List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocs.numDocs; i++)
     {
-      items[i] = new SearchItem($"Document {i}", "palabra random", (float)allDocs.computeRelevance(ref QRelevance, i));
+      double similarity = allDocs.computeRelevance(ref QRelevance, i);
+      Console.WriteLine($"{i} {similarity}");
+      items.Add((similarity, i));
     }
-
-    // bubble sort
-    for (int i = 0; i < items.Length; i++)
-    {
-      for (int j = i + 1; j < items.Length; j++)
-      {
-        if (items[i].Score < items[j].Score)
-        {
-          (items[i], items[j]) = (items[j], items[i]);
-        }
-      }
-    }
-
+  
+    items.Sort(); items.Reverse();
+    
     return items;
   }
 
   public static SearchResult Query(string query)
   {
-    SearchItem[] items = findItems(query);
+    var res = findItems(query);
+    
+    SearchItem[] items = new SearchItem[3] {
+      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.9f),
+      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.5f),
+      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.1f),
+    };
+
     return new SearchResult(items, query);
   }
 }
