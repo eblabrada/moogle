@@ -1,5 +1,35 @@
 ﻿namespace MoogleEngine;
 
+public static class Utils
+{
+  public static string tokenizer(string word)
+  {
+    while (word.Length > 0 && Char.IsPunctuation(word[0]))
+    {
+      word = word.Substring(1);
+    }
+
+    while (word.Length > 0 && Char.IsPunctuation(word[word.Length - 1]))
+    {
+      word = word.Substring(0, word.Length - 1);
+    }
+
+    return word.ToLower();
+  }
+
+  public static double norm(Dictionary<string, double> vec)
+  {
+    double res = 0.0;
+    foreach (var item in vec)
+    {
+      double score = item.Value;
+      res += score * score;
+    }
+    return Math.Sqrt(res);
+  }
+
+}
+
 public class Nescafe
 {
   public List<Dictionary<string, double>> TF = new List<Dictionary<string, double>>();
@@ -7,6 +37,8 @@ public class Nescafe
   public List<Dictionary<string, double>> Relevance = new List<Dictionary<string, double>>();
   public Dictionary<string, List<int>> Voc = new Dictionary<string, List<int>>();
   public string path = "";
+  public List<string> docs = new List<string>();
+  public int numDocs = 0;
 
   public Nescafe(string path)
   {
@@ -32,19 +64,25 @@ public class Nescafe
       "dog 1 and dog 2 ate the hot dog"
     };
 
-
     for (int i = 0; i < docs2.Length; i++)
     {
+      this.docs.Add(docs2[i]);
+    }
+
+    this.numDocs = docs.Count();
+
+    for (int i = 0; i < numDocs; i++)
+    {
       TF.Add(new Dictionary<string, double>());
-      processDocuments(docs2[i], i);
+      processDocuments(docs[i], i);
     }
 
     foreach (string term in Voc.Keys)
     {
-      IDF[term] = Math.Log((double)docs2.Length / Voc[term].Count());
+      IDF[term] = Math.Log((double)numDocs / Voc[term].Count());
     }
 
-    for (int i = 0; i < docs2.Length; i++)
+    for (int i = 0; i < numDocs; i++)
     {
       Relevance.Add(new Dictionary<string, double>());
       foreach (string term in TF[i].Keys)
@@ -53,19 +91,18 @@ public class Nescafe
       }
     }
   }
-
   private void processDocuments(string doc, int index)
   {
     string[] words = doc.Split();
     for (int i = 0; i < words.Length; i++)
     {
-      string word = tokenizer(words[i]);
+      string word = Utils.tokenizer(words[i]);
       if (word.Length == 0)
       {
         continue;
       }
-
-      if (!TF[index].ContainsKey(word)) TF[index].Add(word, 0);
+      
+      if (!TF[index].ContainsKey(word)) TF[index].Add(word, 0.0);
       if (!Voc.ContainsKey(word)) Voc.Add(word, new List<int>());
 
       TF[index][word] += 1.0;
@@ -80,35 +117,85 @@ public class Nescafe
     }
   }
 
-  private string tokenizer(string word)
+  public double computeRelevance(ref Dictionary<string, double> queryVec, int index)
   {
-    while (word.Length > 0 && Char.IsPunctuation(word[0]))
+    double num = 0.0, den = 0.0;
+    foreach (var word in queryVec.Keys)
     {
-      word = word.Substring(1);
+      double docWordScore = 0.0;
+      if (Relevance[index].ContainsKey(word))
+      {
+        docWordScore = Relevance[index][word];
+      }
+      double queryWordScore = queryVec[word];
+      num += docWordScore * queryWordScore;
     }
 
-    while (word.Length > 0 && Char.IsPunctuation(word[word.Length - 1]))
-    {
-      word = word.Substring(0, word.Length - 1);
-    }
+    den = Utils.norm(Relevance[index]) * Utils.norm(queryVec);
 
-    return word.ToLower();
+    if (den != 0.0)
+    {
+      return num / den;
+    }
+    else
+    {
+      return 0.0;
+    }
   }
-
 }
 
-public static class Moogle
+public class Moogle
 {
+  public static Nescafe allDocs = new Nescafe("nescafe");
+
+  public static SearchItem[] findItems(string query) {
+    Dictionary<string, double> QTF = new Dictionary<string, double>();
+    Dictionary<string, double> QRelevance = new Dictionary<string, double>();
+
+    string[] words = query.Split();
+    for (int i = 0; i < words.Length; i++)
+    {
+      string word = Utils.tokenizer(words[i]);
+      if (word.Length == 0)
+      {
+        continue;
+      }
+
+      if (!QTF.ContainsKey(word)) QTF.Add(word, 0.0);
+      QTF[word] += 1.0;
+    }
+
+    foreach (string term in QTF.Keys)
+    {
+      QTF[term] /= (double)words.Length;
+    }
+
+    foreach (string term in QTF.Keys)
+    {
+      QRelevance[term] = QTF[term] * allDocs.IDF[term];
+    }
+
+    SearchItem[] items = new SearchItem[allDocs.numDocs];
+    for (int i = 0; i < allDocs.numDocs; i++)
+    {
+      items[i] = new SearchItem($"Document {i}", "palabra random", (float)allDocs.computeRelevance(ref QRelevance, i));
+    }
+    
+    // bubble sort
+    for (int i = 0; i < items.Length; i++) {
+      for (int j = i + 1; j < items.Length; j++) {
+        if (items[i].Score < items[j].Score) {
+          (items[i], items[j]) = (items[j], items[i]);
+        }
+      }
+    }
+    
+    return items;
+  }
+
   public static SearchResult Query(string query)
   {
-    // Modifique este método para responder a la búsqueda
-
-    SearchItem[] items = new SearchItem[3] {
-      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.9f),
-      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.5f),
-      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.1f),
-    };
-
+    SearchItem[] items = findItems(query);
     return new SearchResult(items, query);
   }
 }
