@@ -1,6 +1,6 @@
 ﻿namespace MoogleEngine;
 
-public class NesCafe
+public class Nescafe
 {
   public List<Dictionary<string, double>> TF = new List<Dictionary<string, double>>();
   public Dictionary<string, double> IDF = new Dictionary<string, double>();
@@ -8,18 +8,18 @@ public class NesCafe
   public Dictionary<string, List<int>> Voc = new Dictionary<string, List<int>>();
   public string path = "";
 
-  public NesCafe(string path)
+  public Nescafe(string path)
   {
     // this.path = path;
 
     string[] docs1 = {
-      "las instrucciones para hacer cafe son muy claras, nescafe>hola, pero hola es cubano; y nescafe no... aunque en CUBA hay mucho NESCAFE",
+      "las instrucciones para hacer cafe son muy claras, nescafe>hola, pero hola es cubano; y nescafe no... aunque en CUBA hay mucho NEScAFE",
       "hay que aprender algoritmos para PROSPERAR en la vida, la Competencia es ConTIGo..... ....UH-IOIn't.... world final is near",
       "no os preocupeis, la inteligencia artificial Es eL futuro....",
       "por que debemos hacer cafe?",
       "esto no tiene nada de sentido pero aqui vamos",
       "perro casa... CaSA, string algorithms, estaba pensando en un Trie porque es muy genial...",
-      "despues de que esto funcione debo cambiarle el nombre de NesCafe a la clase, no puedo entregar con ese nombre tan RaNDoM",
+      "despues de que esto funcione debo cambiarle el nombre de Nescafe a la clase, no puedo entregar con ese nombre tan RaNDoM",
       "habia una vez, en un lugar muy random, alguien estaba EsCribiendo cosas randoms, mientras prefiere tirar contests en CodeForces, pero no puede porque tiene que terminar el proyecto que tiene que entregar dentro de 4 semanas, no es dificil....... pero hay que dedicarle un poco de tiempo para programar... algo algo perro casa... en fin que con esto al menos voy a aprender cosas como TFIDF que me van a servir en el futuro en cosas de Machine Learning y eso... espero que no sea en vano todas estas pruebas",
       "estas son palabras randoms #1: segment tree, tree, rerooting, root, dp, dynamic programming, trie, knuth, morris, pratt, kmp, manacher, palindromic tree... esto no puede estar mejor",
       "estas son palabras randoms #2: no lean esto por favor",
@@ -52,7 +52,6 @@ public class NesCafe
         Relevance[i][term] = TF[i][term] * IDF[term];
       }
     }
-
   }
 
   private void processDocuments(string doc, int index)
@@ -107,7 +106,7 @@ public static class Moogle
     {
       // debug current work
 
-      NesCafe nc = new NesCafe("nescafe");
+      Nescafe nc = new Nescafe("nescafe");
 
       // int index = 0;
       // foreach (var elem in nc.Relevance) {
