@@ -28,7 +28,7 @@ public static class Utils
     return Math.Sqrt(res);
   }
 }
-public class Nescafe
+public class tfidfVectorizer
 {
   public List<Dictionary<string, double>> TF = new List<Dictionary<string, double>>();
   public Dictionary<string, double> IDF = new Dictionary<string, double>();
@@ -38,18 +38,18 @@ public class Nescafe
   public List<string> docs = new List<string>();
   public int numDocs = 0;
 
-  public Nescafe(string path)
+  public tfidfVectorizer(string path)
   {
     // this.path = path;
 
     string[] docs1 = {
-      "las instrucciones para hacer cafe son muy claras, nescafe>hola, pero hola es cubano; y nescafe no... aunque en CUBA hay mucho NEScAFE",
+      "las instrucciones para hacer cafe son muy claras, tfidfVectorizer>hola, pero hola es cubano; y tfidfVectorizer no... aunque en CUBA hay mucho tfidfVectorizer",
       "hay que aprender algoritmos para PROSPERAR en la vida, la Competencia es ConTIGo..... ....UH-IOIn't.... world final is near",
       "no os preocupeis, la inteligencia artificial Es eL futuro....",
       "por que debemos hacer cafe?",
       "esto no tiene nada de sentido pero aqui vamos",
       "perro casa... CaSA, string algorithms, estaba pensando en un Trie porque es muy genial...",
-      "despues de que esto funcione debo cambiarle el nombre de Nescafe a la clase, no puedo entregar con ese nombre tan RaNDoM",
+      "despues de que esto funcione debo cambiarle el nombre de tfidfVectorizer a la clase, no puedo entregar con ese nombre tan RaNDoM",
       "habia una vez, en un lugar muy random, alguien estaba EsCribiendo cosas randoms, mientras prefiere tirar contests en CodeForces, pero no puede porque tiene que terminar el proyecto que tiene que entregar dentro de 4 semanas, no es dificil....... pero hay que dedicarle un poco de tiempo para programar... algo algo perro casa... en fin que con esto al menos voy a aprender cosas como TFIDF que me van a servir en el futuro en cosas de Machine Learning y eso... espero que no sea en vano todas estas pruebas",
       "estas son palabras randoms #1: segment tree, tree, rerooting, root, dp, dynamic programming, trie, knuth, morris, pratt, kmp, manacher, palindromic tree... esto no puede estar mejor",
       "estas son palabras randoms #2: no lean esto por favor",
@@ -62,9 +62,9 @@ public class Nescafe
       "dog 1 and dog 2 ate the hot dog"
     };
 
-    for (int i = 0; i < docs2.Length; i++)
+    for (int i = 0; i < docs1.Length; i++)
     {
-      this.docs.Add(docs2[i]);
+      this.docs.Add(docs1[i]);
     }
 
     this.numDocs = docs.Count();
@@ -144,16 +144,24 @@ public class Nescafe
 
 public class Moogle
 {
-  public static Nescafe allDocs = new Nescafe("nescafe");
+  public static tfidfVectorizer allDocs = new tfidfVectorizer("tfidfVectorizer");
 
   public static List<(double, int)> findItems(string query)
   {
     Dictionary<string, double> QTF = new Dictionary<string, double>();
-    Dictionary<string, double> QRelevance = new Dictionary<string, double>();
 
     string[] words = query.Split();
     for (int i = 0; i < words.Length; i++)
     {
+      int importance = 1;
+      if (words[i][0] == '!') importance = 0;
+
+      int j = 0;
+      while (j < words[i].Length && words[i][j] == '*')
+      {
+        j++; importance++;
+      }
+
       string word = Utils.tokenizer(words[i]);
       if (word.Length == 0)
       {
@@ -161,7 +169,7 @@ public class Moogle
       }
 
       if (!QTF.ContainsKey(word)) QTF.Add(word, 0.0);
-      QTF[word] += 1.0;
+      QTF[word] = importance;
     }
 
     foreach (string term in QTF.Keys)
@@ -169,33 +177,30 @@ public class Moogle
       QTF[term] /= (double)words.Length;
     }
 
-    foreach (string term in QTF.Keys)
-    {
-      QRelevance[term] = QTF[term] * allDocs.IDF[term];
-    }
-
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocs.numDocs; i++)
     {
-      double similarity = allDocs.computeRelevance(ref QRelevance, i);
+      double similarity = allDocs.computeRelevance(ref QTF, i);
+      if (similarity == 0) continue;
+
       Console.WriteLine($"{i} {similarity}");
       items.Add((similarity, i));
     }
-  
+
     items.Sort(); items.Reverse();
-    
+
     return items;
   }
 
   public static SearchResult Query(string query)
   {
     var res = findItems(query);
-    
-    SearchItem[] items = new SearchItem[3] {
-      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.9f),
-      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.5f),
-      new SearchItem("Hello World", "Lorem ipsum dolor sit amet", 0.1f),
-    };
+
+    SearchItem[] items = new SearchItem[res.Count()];
+    for (int i = 0; i < res.Count(); i++)
+    {
+      items[i] = new SearchItem($"Document {res[i].Item2}", "Falta por implementar", res[i].Item2);
+    }
 
     return new SearchResult(items, query);
   }
