@@ -28,7 +28,7 @@ public static class Utils
     return Math.Sqrt(res);
   }
 }
-public class tfidfVectorizer
+public class tfidfAnalyzer
 {
   public List<Dictionary<string, double>> TF = new List<Dictionary<string, double>>();
   public Dictionary<string, double> IDF = new Dictionary<string, double>();
@@ -38,18 +38,18 @@ public class tfidfVectorizer
   public List<string> docs = new List<string>();
   public int numDocs = 0;
 
-  public tfidfVectorizer(string path)
+  public tfidfAnalyzer(string path)
   {
     // this.path = path;
 
     string[] docs1 = {
-      "las instrucciones para hacer cafe son muy claras, tfidfVectorizer>hola, pero hola es cubano; y tfidfVectorizer no... aunque en CUBA hay mucho tfidfVectorizer",
+      "las instrucciones para hacer cafe son muy claras, tfidfAnalyzer>hola, pero hola es cubano; y tfidfAnalyzer no... aunque en CUBA hay mucho tfidfAnalyzer",
       "hay que aprender algoritmos para PROSPERAR en la vida, la Competencia es ConTIGo..... ....UH-IOIn't.... world final is near",
       "no os preocupeis, la inteligencia artificial Es eL futuro....",
       "por que debemos hacer cafe?",
       "esto no tiene nada de sentido pero aqui vamos",
       "perro casa... CaSA, string algorithms, estaba pensando en un Trie porque es muy genial...",
-      "despues de que esto funcione debo cambiarle el nombre de tfidfVectorizer a la clase, no puedo entregar con ese nombre tan RaNDoM",
+      "despues de que esto funcione debo cambiarle el nombre de tfidfAnalyzer a la clase, no puedo entregar con ese nombre tan RaNDoM",
       "habia una vez, en un lugar muy random, alguien estaba EsCribiendo cosas randoms, mientras prefiere tirar contests en CodeForces, pero no puede porque tiene que terminar el proyecto que tiene que entregar dentro de 4 semanas, no es dificil....... pero hay que dedicarle un poco de tiempo para programar... algo algo perro casa... en fin que con esto al menos voy a aprender cosas como TFIDF que me van a servir en el futuro en cosas de Machine Learning y eso... espero que no sea en vano todas estas pruebas",
       "estas son palabras randoms #1: segment tree, tree, rerooting, root, dp, dynamic programming, trie, knuth, morris, pratt, kmp, manacher, palindromic tree... esto no puede estar mejor",
       "estas son palabras randoms #2: no lean esto por favor",
@@ -144,18 +144,28 @@ public class tfidfVectorizer
 
 public class Moogle
 {
-  public static tfidfVectorizer allDocs = new tfidfVectorizer("tfidfVectorizer");
+  public static tfidfAnalyzer allDocs = new tfidfAnalyzer("tfidfAnalyzer");
 
   public static List<(double, int)> findItems(string query)
   {
     Dictionary<string, double> QTF = new Dictionary<string, double>();
 
+    List<string> forbidden = new List<string>();
+    List<string> needed = new List<string>();
+
     string[] words = query.Split();
     for (int i = 0; i < words.Length; i++)
     {
       int importance = 1;
-      if (words[i][0] == '!') importance = 0;
-
+      if (words[i][0] == '!') {
+        importance = 0;
+        forbidden.Add(words[i].Substring(1));
+      }
+      
+      if (words[i][0] == '^') {
+        needed.Add(words[i].Substring(1));
+      }
+      
       int j = 0;
       while (j < words[i].Length && words[i][j] == '*')
       {
@@ -181,7 +191,21 @@ public class Moogle
     for (int i = 0; i < allDocs.numDocs; i++)
     {
       double similarity = allDocs.computeRelevance(ref QTF, i);
-      if (similarity == 0) continue;
+      
+      bool ok = true;
+      foreach (var term in forbidden) {
+        if (allDocs.TF[i].ContainsKey(term)) {
+          ok = false;
+        }
+      }
+      
+      foreach (var term in needed) {
+        if (allDocs.TF[i].ContainsKey(term) == false) {
+          ok = false;
+        }
+      }
+      
+      if (similarity == 0 || !ok) continue;
 
       Console.WriteLine($"{i} {similarity}");
       items.Add((similarity, i));
