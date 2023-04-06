@@ -157,15 +157,17 @@ public class Moogle
     for (int i = 0; i < words.Length; i++)
     {
       int importance = 1;
-      if (words[i][0] == '!') {
+      if (words[i][0] == '!')
+      {
         importance = 0;
-        forbidden.Add(words[i].Substring(1));
+        forbidden.Add(Utils.tokenizer(words[i].Substring(1)));
       }
-      
-      if (words[i][0] == '^') {
-        needed.Add(words[i].Substring(1));
+
+      if (words[i][0] == '^')
+      {
+        needed.Add(Utils.tokenizer(words[i].Substring(1)));
       }
-      
+
       int j = 0;
       while (j < words[i].Length && words[i][j] == '*')
       {
@@ -191,20 +193,27 @@ public class Moogle
     for (int i = 0; i < allDocs.numDocs; i++)
     {
       double similarity = allDocs.computeRelevance(ref QTF, i);
-      
+
       bool ok = true;
-      foreach (var term in forbidden) {
-        if (allDocs.TF[i].ContainsKey(term)) {
+
+      // ignore forbidden words
+      foreach (var term in forbidden)
+      {
+        if (allDocs.TF[i].ContainsKey(term))
+        {
           ok = false;
         }
       }
-      
-      foreach (var term in needed) {
-        if (allDocs.TF[i].ContainsKey(term) == false) {
+
+      // consider needed words
+      foreach (var term in needed)
+      {
+        if (allDocs.TF[i].ContainsKey(term) == false)
+        {
           ok = false;
         }
       }
-      
+
       if (similarity == 0 || !ok) continue;
 
       Console.WriteLine($"{i} {similarity}");
