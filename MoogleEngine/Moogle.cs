@@ -5,8 +5,10 @@ public static class Utils
   public static string Tokenizer(string word)
   {
     string res = "";
-    for (int i = 0; i < word.Length; i++) {
-      if (Char.IsLetterOrDigit(word[i])) {
+    for (int i = 0; i < word.Length; i++)
+    {
+      if (Char.IsLetterOrDigit(word[i]))
+      {
         res += word[i];
       }
     }
@@ -50,7 +52,7 @@ public class TFIDFAnalyzer
         this.documentTitle[currentIndex] = Path.GetFileNameWithoutExtension(dir);
         currentIndex++;
       }
-  
+
       this.numberOfDocuments = documents.Count();
 
       for (int i = 0; i < numberOfDocuments; i++)
@@ -80,7 +82,7 @@ public class TFIDFAnalyzer
   }
   private void ProcessDocuments(string doc, int index)
   {
-    char[] splitters = {' ', ',', '.', ':',';', '\t', '\n'};
+    char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
     string[] words = doc.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
     for (int i = 0; i < words.Length; i++)
     {
