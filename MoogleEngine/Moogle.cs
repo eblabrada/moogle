@@ -2,22 +2,18 @@
 
 public static class Utils
 {
-  public static string tokenizer(string word)
+  public static string Tokenizer(string word)
   {
-    while (word.Length > 0 && Char.IsPunctuation(word[0]))
-    {
-      word = word.Substring(1);
+    string res = "";
+    for (int i = 0; i < word.Length; i++) {
+      if (Char.IsLetterOrDigit(word[i])) {
+        res += word[i];
+      }
     }
-
-    while (word.Length > 0 && Char.IsPunctuation(word[word.Length - 1]))
-    {
-      word = word.Substring(0, word.Length - 1);
-    }
-
-    return word.ToLower();
+    return res.ToLower();
   }
 
-  public static double norm(Dictionary<string, double> vec)
+  public static double Norm(Dictionary<string, double> vec)
   {
     double res = 0.0;
     foreach (var item in vec)
@@ -28,85 +24,81 @@ public static class Utils
     return Math.Sqrt(res);
   }
 }
-public class tfidfAnalyzer
+
+public class TFIDFAnalyzer
 {
   public List<Dictionary<string, double>> TF = new List<Dictionary<string, double>>();
   public Dictionary<string, double> IDF = new Dictionary<string, double>();
-  public List<Dictionary<string, double>> Relevance = new List<Dictionary<string, double>>();
-  public Dictionary<string, List<int>> Voc = new Dictionary<string, List<int>>();
+  public List<Dictionary<string, double>> relevance = new List<Dictionary<string, double>>();
+  public Dictionary<string, List<int>> vocabulary = new Dictionary<string, List<int>>();
   public string path = "";
-  public List<string> docs = new List<string>();
-  public int numDocs = 0;
+  public List<string> documents = new List<string>();
+  public Dictionary<int, string> documentTitle = new Dictionary<int, string>();
+  public int numberOfDocuments = 0;
 
-  public tfidfAnalyzer(string path)
+  public TFIDFAnalyzer(string path)
   {
-    // this.path = path;
+    this.path = path;
 
-    string[] docs1 = {
-      "las instrucciones para hacer cafe son muy claras, tfidfAnalyzer>hola, pero hola es cubano; y tfidfAnalyzer no... aunque en CUBA hay mucho tfidfAnalyzer",
-      "hay que aprender algoritmos para PROSPERAR en la vida, la Competencia es ConTIGo..... ....UH-IOIn't.... world final is near",
-      "no os preocupeis, la inteligencia artificial Es eL futuro....",
-      "por que debemos hacer cafe?",
-      "esto no tiene nada de sentido pero aqui vamos",
-      "perro casa... CaSA, string algorithms, estaba pensando en un Trie porque es muy genial...",
-      "despues de que esto funcione debo cambiarle el nombre de tfidfAnalyzer a la clase, no puedo entregar con ese nombre tan RaNDoM",
-      "habia una vez, en un lugar muy random, alguien estaba EsCribiendo cosas randoms, mientras prefiere tirar contests en CodeForces, pero no puede porque tiene que terminar el proyecto que tiene que entregar dentro de 4 semanas, no es dificil....... pero hay que dedicarle un poco de tiempo para programar... algo algo perro casa... en fin que con esto al menos voy a aprender cosas como TFIDF que me van a servir en el futuro en cosas de Machine Learning y eso... espero que no sea en vano todas estas pruebas",
-      "estas son palabras randoms #1: segment tree, tree, rerooting, root, dp, dynamic programming, trie, knuth, morris, pratt, kmp, manacher, palindromic tree... esto no puede estar mejor",
-      "estas son palabras randoms #2: no lean esto por favor",
-      "no se que mas escribir"
-    };
-
-    string[] docs2 = {
-      "the mouses played with the cat",
-      "the quick brown fox jumped over the lazy dog",
-      "dog 1 and dog 2 ate the hot dog"
-    };
-
-    for (int i = 0; i < docs1.Length; i++)
+    try
     {
-      this.docs.Add(docs1[i]);
-    }
-
-    this.numDocs = docs.Count();
-
-    for (int i = 0; i < numDocs; i++)
-    {
-      TF.Add(new Dictionary<string, double>());
-      processDocuments(docs[i], i);
-    }
-
-    foreach (string term in Voc.Keys)
-    {
-      IDF[term] = Math.Log((double)numDocs / Voc[term].Count());
-    }
-
-    for (int i = 0; i < numDocs; i++)
-    {
-      Relevance.Add(new Dictionary<string, double>());
-      foreach (string term in TF[i].Keys)
+      string[] directories = Directory.GetFiles(path, "*.txt");
+      int currentIndex = 0;
+      foreach (var dir in directories)
       {
-        Relevance[i][term] = TF[i][term] * IDF[term];
+        this.documents.Add(File.ReadAllText(dir));
+        this.documentTitle[currentIndex] = Path.GetFileNameWithoutExtension(dir);
+        currentIndex++;
+      }
+  
+      this.numberOfDocuments = documents.Count();
+
+      for (int i = 0; i < numberOfDocuments; i++)
+      {
+        TF.Add(new Dictionary<string, double>());
+        ProcessDocuments(documents[i], i);
+      }
+
+      foreach (string term in vocabulary.Keys)
+      {
+        IDF[term] = Math.Log((double)numberOfDocuments / vocabulary[term].Count());
+      }
+
+      for (int i = 0; i < numberOfDocuments; i++)
+      {
+        relevance.Add(new Dictionary<string, double>());
+        foreach (string term in TF[i].Keys)
+        {
+          relevance[i][term] = TF[i][term] * IDF[term];
+        }
       }
     }
+    catch (Exception e)
+    {
+      Console.WriteLine($"The process failed: {e.ToString()}");
+    }
   }
-  private void processDocuments(string doc, int index)
+  private void ProcessDocuments(string doc, int index)
   {
-    string[] words = doc.Split();
+    char[] splitters = {' ', ',', '.', ':',';', '\t', '\n'};
+    string[] words = doc.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
     for (int i = 0; i < words.Length; i++)
     {
-      string word = Utils.tokenizer(words[i]);
+      string word = Utils.Tokenizer(words[i]);
       if (word.Length == 0)
       {
         continue;
       }
 
       if (!TF[index].ContainsKey(word)) TF[index].Add(word, 0.0);
-      if (!Voc.ContainsKey(word)) Voc.Add(word, new List<int>());
+      if (!vocabulary.ContainsKey(word)) vocabulary.Add(word, new List<int>());
 
       TF[index][word] += 1.0;
 
-      if (!Voc[word].Contains(index))
-        Voc[word].Add(index);
+      if (!vocabulary[word].Contains(index))
+      {
+        vocabulary[word].Add(index);
+      }
     }
 
     foreach (string term in TF[index].Keys)
@@ -115,21 +107,21 @@ public class tfidfAnalyzer
     }
   }
 
-  public double computeRelevance(ref Dictionary<string, double> queryVec, int index)
+  public double ComputeRelevance(ref Dictionary<string, double> queryVec, int index)
   {
     double num = 0.0, den = 0.0;
     foreach (var word in queryVec.Keys)
     {
       double docWordScore = 0.0;
-      if (Relevance[index].ContainsKey(word))
+      if (relevance[index].ContainsKey(word))
       {
-        docWordScore = Relevance[index][word];
+        docWordScore = relevance[index][word];
       }
       double queryWordScore = queryVec[word];
       num += docWordScore * queryWordScore;
     }
 
-    den = Utils.norm(Relevance[index]) * Utils.norm(queryVec);
+    den = Utils.Norm(relevance[index]) * Utils.Norm(queryVec);
 
     if (den != 0.0)
     {
@@ -144,7 +136,7 @@ public class tfidfAnalyzer
 
 public class Moogle
 {
-  public static tfidfAnalyzer allDocs = new tfidfAnalyzer("tfidfAnalyzer");
+  public static TFIDFAnalyzer AllDocuments = new TFIDFAnalyzer("../Content");
 
   public static List<(double, int)> findItems(string query)
   {
@@ -160,12 +152,12 @@ public class Moogle
       if (words[i][0] == '!')
       {
         importance = 0;
-        forbidden.Add(Utils.tokenizer(words[i].Substring(1)));
+        forbidden.Add(Utils.Tokenizer(words[i].Substring(1)));
       }
 
       if (words[i][0] == '^')
       {
-        needed.Add(Utils.tokenizer(words[i].Substring(1)));
+        needed.Add(Utils.Tokenizer(words[i].Substring(1)));
       }
 
       int j = 0;
@@ -174,7 +166,7 @@ public class Moogle
         j++; importance++;
       }
 
-      string word = Utils.tokenizer(words[i]);
+      string word = Utils.Tokenizer(words[i]);
       if (word.Length == 0)
       {
         continue;
@@ -190,16 +182,16 @@ public class Moogle
     }
 
     List<(double, int)> items = new List<(double, int)>();
-    for (int i = 0; i < allDocs.numDocs; i++)
+    for (int i = 0; i < AllDocuments.numberOfDocuments; i++)
     {
-      double similarity = allDocs.computeRelevance(ref QTF, i);
+      double similarity = AllDocuments.ComputeRelevance(ref QTF, i);
 
       bool ok = true;
 
       // ignore forbidden words
       foreach (var term in forbidden)
       {
-        if (allDocs.TF[i].ContainsKey(term))
+        if (AllDocuments.TF[i].ContainsKey(term))
         {
           ok = false;
         }
@@ -208,7 +200,7 @@ public class Moogle
       // consider needed words
       foreach (var term in needed)
       {
-        if (allDocs.TF[i].ContainsKey(term) == false)
+        if (AllDocuments.TF[i].ContainsKey(term) == false)
         {
           ok = false;
         }
@@ -232,7 +224,7 @@ public class Moogle
     SearchItem[] items = new SearchItem[res.Count()];
     for (int i = 0; i < res.Count(); i++)
     {
-      items[i] = new SearchItem($"Document {res[i].Item2}", "Falta por implementar", res[i].Item2);
+      items[i] = new SearchItem(AllDocuments.documentTitle[res[i].Item2], "Falta por implementar", (float)res[i].Item1);
     }
 
     return new SearchResult(items, query);
