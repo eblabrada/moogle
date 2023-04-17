@@ -293,14 +293,14 @@ public static class SearchEngine
     {
       QTF[term] /= (double)words.Length;
     }
-  
+
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocuments.numberOfDocuments; i++)
     {
       double similarity = allDocuments.ComputeRelevance(ref QTF, i);
 
       if (similarity == 0) continue;
-  
+
       Console.WriteLine($"{allDocuments.documentTitle[i]} with similarity {similarity}");
       items.Add((similarity, i));
     }
@@ -324,14 +324,14 @@ public static class Moogle
   public static SearchResult Query(string query)
   {
     Console.WriteLine("..... New Query .....");
-    
+
     var watch = System.Diagnostics.Stopwatch.StartNew();
-    
+
     List<SearchItem> res = new List<SearchItem>(SearchEngine.FindItems(query));
-    
+
     Console.WriteLine($"Time elapsed (s): {watch.ElapsedMilliseconds / 1000}");
     Console.WriteLine("");
-    
+
     SearchItem[] items = res.ToArray();
     return new SearchResult(items, query);
   }
