@@ -41,7 +41,28 @@ public static class Utils
 
     return dp[n & 1, m];
   }
-
+  public static int LongestCommonPrefix(string a, string b)
+  {
+    int cnt = 0;
+    for (int i = 0; i < Math.Min(a.Length, b.Length); i++)
+    {
+      if (a[i] == b[i])
+      {
+        cnt++;
+      }
+      else
+      {
+        break;
+      }
+    }
+    return cnt;
+  }
+  public static double Distance(string a, string b)
+  {
+    int lcp = LongestCommonPrefix(a, b);
+    if (lcp == 0) return EditDistance(a, b);
+    return (double)EditDistance(a, b) / (double)LongestCommonPrefix(a, b);
+  }
   public static bool AreSimilar(string a, string b)
   {
     a = a.ToLower(); b = b.ToLower();
@@ -51,7 +72,6 @@ public static class Utils
     }
     return false;
   }
-
   public static string Tokenizer(string word)
   {
     string res = "";
@@ -64,7 +84,6 @@ public static class Utils
     }
     return res.ToLower();
   }
-
   public static List<string> NormalizeText(string text)
   {
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
@@ -80,7 +99,6 @@ public static class Utils
     }
     return res;
   }
-
   public static string[] GetNeed(string[] words)
   {
     List<string> res = new List<string>();
@@ -93,7 +111,6 @@ public static class Utils
     }
     return res.ToArray();
   }
-
   public static string[] GetForbidden(string[] words)
   {
     List<string> res = new List<string>();
@@ -208,6 +225,7 @@ public class TFIDFAnalyzer
       Console.WriteLine($"The process failed: {e.ToString()}");
     }
   }
+
   private void ProcessDocuments(List<string> doc, int index)
   {
     for (int i = 0; i < doc.Count(); i++)
@@ -233,6 +251,53 @@ public class TFIDFAnalyzer
     }
   }
 
+  public string Suggestion(string query)
+  {
+    char[] splitters = { ' ', '\t', '\n' };
+    string[] words = query.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+
+    string res = "";
+    for (int i = 0; i < words.Length; i++)
+    {
+      string str = Utils.Tokenizer(words[i]);
+
+      double minDist = 100000;
+      foreach (var term in vocabulary.Keys)
+      {
+        if (Utils.Distance(Utils.Tokenizer(words[i]), term) < minDist)
+        {
+          minDist = Utils.Distance(Utils.Tokenizer(words[i]), term);
+          str = term;
+        }
+      }
+
+      res += " ";
+
+      int ind = 0;
+      while (ind < words[i].Length && !Char.IsLetterOrDigit(words[i][ind]))
+      {
+        res += words[i][ind].ToString();
+        ind++;
+      }
+
+      res += str;
+
+      ind = words[i].Length - 1;
+      while (ind >= 0 && !Char.IsLetterOrDigit(words[i][ind]))
+      {
+        res += words[i][ind].ToString();
+        ind--;
+      }
+    }
+
+    if (res.Length > 0)
+    {
+      return res[0].ToString().ToUpper() + res.Substring(1);
+    }
+
+    return res;
+  }
+
   private double OperatorIn(string[] words, int index)
   {
     for (int i = 0; i < words.Length; i++)
@@ -242,6 +307,7 @@ public class TFIDFAnalyzer
         return 0.0;
       }
     }
+
     return 1.0;
   }
 
@@ -254,6 +320,7 @@ public class TFIDFAnalyzer
         return 0.0;
       }
     }
+
     return 1.0;
   }
 
@@ -269,6 +336,7 @@ public class TFIDFAnalyzer
         res *= more * Math.Log(frequency[index][word]);
       }
     }
+
     return res;
   }
 
@@ -400,8 +468,10 @@ public static class SearchEngine
     return new SearchItem(item.Title, snippet, item.Score);
   }
 
-  public static List<SearchItem> FindItems(string query)
+  public static (List<SearchItem>, string) FindItems(string query)
   {
+    string suggest = allDocuments.Suggestion(query);
+
     Dictionary<string, double> QTF = new Dictionary<string, double>();
 
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
@@ -438,16 +508,16 @@ public static class SearchEngine
     }
 
     items.Sort(); items.Reverse();
-
     List<SearchItem> res = new List<SearchItem>();
     for (int i = 0; i < items.Count(); i++)
     {
       string title = allDocuments.documentTitle[items[i].Item2];
       string snippet = allDocuments.documents[items[i].Item2];
+
       res.Add(CalculateSnippet(new SearchItem(title, snippet, (float)items[i].Item1), query));
     }
 
-    return res;
+    return (res, suggest);
   }
 }
 
@@ -459,12 +529,13 @@ public static class Moogle
 
     var watch = System.Diagnostics.Stopwatch.StartNew();
 
-    List<SearchItem> res = new List<SearchItem>(SearchEngine.FindItems(query));
+    var res = SearchEngine.FindItems(query);
 
     Console.WriteLine($"Time elapsed (s): {watch.ElapsedMilliseconds / 1000}");
     Console.WriteLine("");
 
-    SearchItem[] items = res.ToArray();
-    return new SearchResult(items, query);
+    SearchItem[] items = res.Item1.ToArray();
+
+    return new SearchResult(items, res.Item2);
   }
 }
