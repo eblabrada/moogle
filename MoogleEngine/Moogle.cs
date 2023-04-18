@@ -239,15 +239,18 @@ public class TFIDFAnalyzer
     }
     return 1.0;
   }
-  
-  private double OperatorMore((string, int)[] words, int index) {
+
+  private double OperatorMore((string, int)[] words, int index)
+  {
     double res = 1.0;
-    for (int i = 0; i < words.Length; i++) {
+    for (int i = 0; i < words.Length; i++)
+    {
       string word = words[i].Item1;
       int more = words[i].Item2;
-      if (vocabulary[word].Contains(index)) {
+      if (vocabulary[word].Contains(index))
+      {
         res *= more * Math.Log(TF[index][word] * fdocuments[index].Count());
-      }  
+      }
     }
     return res;
   }
@@ -384,7 +387,7 @@ public static class SearchEngine
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocuments.numberOfDocuments; i++)
     {
-      double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more);   
+      double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more);
       if (similarity == 0) continue;
       Console.WriteLine($"{allDocuments.documentTitle[i]} with similarity {similarity}");
       items.Add((similarity, i));
