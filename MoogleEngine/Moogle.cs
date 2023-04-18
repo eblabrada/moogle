@@ -125,6 +125,19 @@ public static class Utils
     return res.ToArray();
   }
 
+  public static (string, string)[] GetNear(string[] words)
+  {
+    List<(string, string)> res = new List<(string, string)>();
+    for (int i = 0; i < words.Length; i++)
+    {
+      if (i - 1 >= 0 && i + 1 < words.Length && words[i] == "~")
+      {
+        res.Add((Tokenizer(words[i - 1]), Tokenizer(words[i + 1])));
+      }
+    }
+    return res.ToArray();
+  }
+
   public static double Norm(Dictionary<string, double> vec)
   {
     double res = 0.0;
@@ -259,7 +272,32 @@ public class TFIDFAnalyzer
     return res;
   }
 
-  public double ComputeRelevance(ref Dictionary<string, double> queryVec, int index, string[] need, string[] forb, (string, int)[] more)
+  private double OperatorNear((string, string)[] words, int index)
+  {
+    double res = 1.0;
+    for (int i = 0; i < words.Length; i++)
+    {
+      string a = words[i].Item1, b = words[i].Item2;
+      int lastA = -1, lastB = -1, minDist = 100000;
+      for (int j = 0; j < fdocuments[index].Count(); j++)
+      {
+        string cur = fdocuments[index][j];
+        if (cur == a) lastA = j;
+        if (cur == b) lastB = j;
+        if (lastA != -1 && lastB != -1)
+        {
+          minDist = Math.Min(minDist, Math.Abs(lastA - lastB));
+        }
+      }
+      if (minDist == 0) minDist = 1;
+      res *= 2.0 / (Math.Log(minDist) + 1);
+    }
+
+    return res;
+  }
+
+  public double ComputeRelevance(ref Dictionary<string, double> queryVec, int index,
+    string[] need, string[] forb, (string, int)[] more, (string, string)[] near)
   {
     double num = 0.0, den = 0.0;
     foreach (var word in queryVec.Keys)
@@ -284,6 +322,7 @@ public class TFIDFAnalyzer
     res *= OperatorIn(need, index);
     res *= OperatorNotIn(forb, index);
     res *= OperatorMore(more, index);
+    res *= OperatorNear(near, index);
     return res;
   }
 }
@@ -370,6 +409,7 @@ public static class SearchEngine
     string[] need = Utils.GetNeed(words);
     string[] forb = Utils.GetForbidden(words);
     (string, int)[] more = Utils.GetMore(words);
+    (string, string)[] near = Utils.GetNear(words);
 
     for (int i = 0; i < words.Length; i++)
     {
@@ -391,7 +431,7 @@ public static class SearchEngine
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocuments.numberOfDocuments; i++)
     {
-      double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more);
+      double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more, near);
       if (similarity == 0) continue;
       Console.WriteLine($"{allDocuments.documentTitle[i]} with similarity {similarity}");
       items.Add((similarity, i));
