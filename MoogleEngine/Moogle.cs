@@ -72,6 +72,16 @@ public static class Utils
     }
     return false;
   }
+
+  public static string Capitalize(string word)
+  {
+    if (word.Length == 0) return word;
+
+    string res = word[0].ToString().ToUpper() + word.Substring(1);
+
+    return res;
+  }
+
   public static string Tokenizer(string word)
   {
     string res = "";
@@ -271,13 +281,18 @@ public class TFIDFAnalyzer
         }
       }
 
-      res += " ";
+      if (i != 0) res += " ";
 
       int ind = 0;
       while (ind < words[i].Length && !Char.IsLetterOrDigit(words[i][ind]))
       {
         res += words[i][ind].ToString();
         ind++;
+      }
+
+      if (ind < words[i].Length && Char.IsUpper(words[i][ind]))
+      {
+        str = Utils.Capitalize(str);
       }
 
       res += str;
@@ -288,11 +303,6 @@ public class TFIDFAnalyzer
         res += words[i][ind].ToString();
         ind--;
       }
-    }
-
-    if (res.Length > 0)
-    {
-      return res[0].ToString().ToUpper() + res.Substring(1);
     }
 
     return res;
