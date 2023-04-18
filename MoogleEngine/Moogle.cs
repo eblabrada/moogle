@@ -81,6 +81,50 @@ public static class Utils
     return res;
   }
 
+  public static string[] GetNeed(string[] words)
+  {
+    List<string> res = new List<string>();
+    for (int i = 0; i < words.Length; i++)
+    {
+      if (words[i].Length > 0 && words[i][0] == '^')
+      {
+        res.Add(Tokenizer(words[i]));
+      }
+    }
+    return res.ToArray();
+  }
+
+  public static string[] GetForbidden(string[] words)
+  {
+    List<string> res = new List<string>();
+    for (int i = 0; i < words.Length; i++)
+    {
+      if (words[i].Length > 0 && words[i][0] == '!')
+      {
+        res.Add(Tokenizer(words[i]));
+      }
+    }
+    return res.ToArray();
+  }
+
+  public static (string, int)[] GetMore(string[] words)
+  {
+    List<(string, int)> res = new List<(string, int)>();
+    for (int i = 0; i < words.Length; i++)
+    {
+      int cnt = 0;
+      while (cnt < words[i].Length && words[i][cnt] == '*')
+      {
+        cnt++;
+      }
+      if (cnt != 0)
+      {
+        res.Add((Tokenizer(words[i]), cnt));
+      }
+    }
+    return res.ToArray();
+  }
+
   public static double Norm(Dictionary<string, double> vec)
   {
     double res = 0.0;
@@ -172,7 +216,43 @@ public class TFIDFAnalyzer
     }
   }
 
-  public double ComputeRelevance(ref Dictionary<string, double> queryVec, int index)
+  private double OperatorIn(string[] words, int index)
+  {
+    for (int i = 0; i < words.Length; i++)
+    {
+      if (!vocabulary[words[i]].Contains(index))
+      {
+        return 0.0;
+      }
+    }
+    return 1.0;
+  }
+
+  private double OperatorNotIn(string[] words, int index)
+  {
+    for (int i = 0; i < words.Length; i++)
+    {
+      if (vocabulary[words[i]].Contains(index))
+      {
+        return 0.0;
+      }
+    }
+    return 1.0;
+  }
+  
+  private double OperatorMore((string, int)[] words, int index) {
+    double res = 1.0;
+    for (int i = 0; i < words.Length; i++) {
+      string word = words[i].Item1;
+      int more = words[i].Item2;
+      if (vocabulary[word].Contains(index)) {
+        res *= more * Math.Log(TF[index][word] * fdocuments[index].Count());
+      }  
+    }
+    return res;
+  }
+
+  public double ComputeRelevance(ref Dictionary<string, double> queryVec, int index, string[] need, string[] forb, (string, int)[] more)
   {
     double num = 0.0, den = 0.0;
     foreach (var word in queryVec.Keys)
@@ -188,14 +268,16 @@ public class TFIDFAnalyzer
 
     den = Utils.Norm(relevance[index]) * Utils.Norm(queryVec);
 
-    if (den != 0.0)
-    {
-      return num / den;
-    }
-    else
+    if (den == 0.0)
     {
       return 0.0;
     }
+
+    double res = num / den;
+    res *= OperatorIn(need, index);
+    res *= OperatorNotIn(forb, index);
+    res *= OperatorMore(more, index);
+    return res;
   }
 }
 
@@ -215,7 +297,7 @@ public static class SearchEngine
       p++;
     }
 
-    string snippet = str + " (...) ";
+    string snippet = "";
 
     string[] queryText = query.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
 
@@ -276,7 +358,12 @@ public static class SearchEngine
   {
     Dictionary<string, double> QTF = new Dictionary<string, double>();
 
-    string[] words = query.Split();
+    char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
+    string[] words = query.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+    string[] need = Utils.GetNeed(words);
+    string[] forb = Utils.GetForbidden(words);
+    (string, int)[] more = Utils.GetMore(words);
+
     for (int i = 0; i < words.Length; i++)
     {
       string word = Utils.Tokenizer(words[i]);
@@ -297,10 +384,8 @@ public static class SearchEngine
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocuments.numberOfDocuments; i++)
     {
-      double similarity = allDocuments.ComputeRelevance(ref QTF, i);
-
+      double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more);   
       if (similarity == 0) continue;
-
       Console.WriteLine($"{allDocuments.documentTitle[i]} with similarity {similarity}");
       items.Add((similarity, i));
     }
