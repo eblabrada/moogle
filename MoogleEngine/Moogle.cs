@@ -140,6 +140,7 @@ public static class Utils
 public class TFIDFAnalyzer
 {
   public List<Dictionary<string, double>> TF = new List<Dictionary<string, double>>();
+  public List<Dictionary<string, int>> frequency = new List<Dictionary<string, int>>();
   public Dictionary<string, double> IDF = new Dictionary<string, double>();
   public List<Dictionary<string, double>> relevance = new List<Dictionary<string, double>>();
   public Dictionary<string, List<int>> vocabulary = new Dictionary<string, List<int>>();
@@ -171,6 +172,7 @@ public class TFIDFAnalyzer
       for (int i = 0; i < numberOfDocuments; i++)
       {
         TF.Add(new Dictionary<string, double>());
+        frequency.Add(new Dictionary<string, int>());
         ProcessDocuments(fdocuments[i], i);
       }
 
@@ -200,9 +202,11 @@ public class TFIDFAnalyzer
       string word = doc[i];
 
       if (!TF[index].ContainsKey(word)) TF[index].Add(word, 0.0);
+      if (!frequency[index].ContainsKey(word)) frequency[index].Add(word, 0);
       if (!vocabulary.ContainsKey(word)) vocabulary.Add(word, new List<int>());
 
       TF[index][word] += 1.0;
+      frequency[index][word] += 1;
 
       if (!vocabulary[word].Contains(index))
       {
@@ -249,7 +253,7 @@ public class TFIDFAnalyzer
       int more = words[i].Item2;
       if (vocabulary[word].Contains(index))
       {
-        res *= more * Math.Log(TF[index][word] * fdocuments[index].Count());
+        res *= more * Math.Log(frequency[index][word]);
       }
     }
     return res;
