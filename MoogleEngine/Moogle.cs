@@ -3,6 +3,8 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Numerics;
+using System.Text.Json;
 
 public static class Utils
 {
@@ -175,6 +177,46 @@ public static class Utils
     }
     return Math.Sqrt(res);
   }
+
+  public static BigInteger PosfixCalculator(string[] arr)
+  {
+    Stack<BigInteger> st = new Stack<BigInteger>();
+    for (int i = 0; i < arr.Length; i++)
+    {
+      if (Char.IsDigit(arr[i][0]))
+      {
+        st.Push(BigInteger.Parse(arr[i]));
+      }
+      else
+      {
+        char op = arr[i][0];
+        BigInteger res = 0;
+        var b = st.Peek(); st.Pop();
+        var a = st.Peek(); st.Pop();
+
+        switch (op)
+        {
+          case '+':
+            res = BigInteger.Add(a, b);
+            break;
+          case '-':
+            res = BigInteger.Subtract(a, b);
+            break;
+          case '*':
+            res = BigInteger.Multiply(a, b);
+            break;
+          case '/':
+            res = BigInteger.Divide(a, b);
+            break;
+          default:
+            break;
+        }
+
+        st.Push(res);
+      }
+    }
+    return st.Peek();
+  }
 }
 
 public class TFIDFAnalyzer
@@ -193,6 +235,13 @@ public class TFIDFAnalyzer
   public TFIDFAnalyzer(string path)
   {
     this.path = path;
+
+    if (IsBuilt())
+    {
+      GetInfo();
+      this.numberOfDocuments = documents.Count();
+      return;
+    }
 
     try
     {
@@ -229,11 +278,56 @@ public class TFIDFAnalyzer
           relevance[i][term] = TF[i][term] * IDF[term];
         }
       }
+
+      SaveInfo();
     }
     catch (Exception e)
     {
       Console.WriteLine($"The process failed: {e.ToString()}");
     }
+
+  }
+
+  public void SaveInfo(string database = "../Database")
+  {
+    File.WriteAllText(database + "/TF.json", JsonSerializer.Serialize(TF, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/IDF.json", JsonSerializer.Serialize(IDF, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/relevance.json", JsonSerializer.Serialize(relevance, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/frequency.json", JsonSerializer.Serialize(frequency, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/vocabulary.json", JsonSerializer.Serialize(vocabulary, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/documents.json", JsonSerializer.Serialize(documents, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/fdocuments.json", JsonSerializer.Serialize(fdocuments, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/documentTitle.json", JsonSerializer.Serialize(documentTitle, new JsonSerializerOptions() { WriteIndented = true }));
+  }
+
+  public void GetInfo(string database = "../Database")
+  {
+    string jsonString = File.ReadAllText(database + "/TF.json");
+    this.TF = JsonSerializer.Deserialize<List<Dictionary<string, double>>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/IDF.json");
+    this.IDF = JsonSerializer.Deserialize<Dictionary<string, double>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/relevance.json");
+    this.relevance = JsonSerializer.Deserialize<List<Dictionary<string, double>>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/frequency.json");
+    this.frequency = JsonSerializer.Deserialize<List<Dictionary<string, int>>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/vocabulary.json");
+    this.vocabulary = JsonSerializer.Deserialize<Dictionary<string, List<int>>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/documents.json");
+    this.documents = JsonSerializer.Deserialize<List<string>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/fdocuments.json");
+    this.fdocuments = JsonSerializer.Deserialize<List<List<string>>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/documentTitle.json");
+    this.documentTitle = JsonSerializer.Deserialize<Dictionary<int, string>>(jsonString)!;
+  }
+
+  public bool IsBuilt(string database = "../Database")
+  {
+    string[] directories = Directory.GetFiles(database, "*.json");
+    if (directories.Length == 8)
+    {
+      return true;
+    }
+    return false;
   }
 
   private void ProcessDocuments(List<string> doc, int index)
