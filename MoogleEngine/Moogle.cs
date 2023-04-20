@@ -236,15 +236,26 @@ public class TFIDFAnalyzer
   {
     this.path = path;
 
+    bool built = false;
     if (IsBuilt())
     {
       GetInfo();
       this.numberOfDocuments = documents.Count();
-      return;
+
+      string[] books = Directory.GetFiles(path, "*.txt");
+      if (books.Length == numberOfDocuments)
+      {
+        built = true;
+      } else {
+        DeleteInfo(); Clear();
+      }
     }
+
+    if (built) return;
 
     try
     {
+      Console.WriteLine("Charging...");
       string[] directories = Directory.GetFiles(path, "*.txt");
       int currentIndex = 0;
       foreach (var dir in directories)
@@ -285,9 +296,18 @@ public class TFIDFAnalyzer
     {
       Console.WriteLine($"The process failed: {e.ToString()}");
     }
-
   }
-
+  
+  public bool IsBuilt(string database = "../Database")
+  {
+    string[] databases = Directory.GetFiles(database, "*.json");
+    if (databases.Length == 8)
+    {
+      return true;
+    }
+    return false;
+  }
+  
   public void SaveInfo(string database = "../Database")
   {
     File.WriteAllText(database + "/TF.json", JsonSerializer.Serialize(TF, new JsonSerializerOptions() { WriteIndented = true }));
@@ -320,14 +340,21 @@ public class TFIDFAnalyzer
     this.documentTitle = JsonSerializer.Deserialize<Dictionary<int, string>>(jsonString)!;
   }
 
-  public bool IsBuilt(string database = "../Database")
-  {
-    string[] directories = Directory.GetFiles(database, "*.json");
-    if (directories.Length == 8)
-    {
-      return true;
-    }
-    return false;
+  public void DeleteInfo(string database = "../Database") {
+    File.Delete(database + "/TF.json");
+    File.Delete(database + "/IDF.json");
+    File.Delete(database + "/relevance.json");
+    File.Delete(database + "/frequency.json");
+    File.Delete(database + "/vocabulary.json");
+    File.Delete(database + "/documents.json");
+    File.Delete(database + "/fdocuments.json");
+    File.Delete(database + "/documentTitle.json");  
+  }
+
+  public void Clear() {
+    TF.Clear(); IDF.Clear(); relevance.Clear();
+    frequency.Clear(); vocabulary.Clear();
+    documents.Clear(); fdocuments.Clear(); documentTitle.Clear();
   }
 
   private void ProcessDocuments(List<string> doc, int index)
@@ -615,6 +642,7 @@ public static class SearchEngine
     List<SearchItem> res = new List<SearchItem>();
     for (int i = 0; i < items.Count(); i++)
     {
+
       string title = allDocuments.documentTitle[items[i].Item2];
       string snippet = allDocuments.documents[items[i].Item2];
 
