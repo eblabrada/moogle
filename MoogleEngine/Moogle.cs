@@ -177,46 +177,6 @@ public static class Utils
     }
     return Math.Sqrt(res);
   }
-
-  public static BigInteger PosfixCalculator(string[] arr)
-  {
-    Stack<BigInteger> st = new Stack<BigInteger>();
-    for (int i = 0; i < arr.Length; i++)
-    {
-      if (Char.IsDigit(arr[i][0]))
-      {
-        st.Push(BigInteger.Parse(arr[i]));
-      }
-      else
-      {
-        char op = arr[i][0];
-        BigInteger res = 0;
-        var b = st.Peek(); st.Pop();
-        var a = st.Peek(); st.Pop();
-
-        switch (op)
-        {
-          case '+':
-            res = BigInteger.Add(a, b);
-            break;
-          case '-':
-            res = BigInteger.Subtract(a, b);
-            break;
-          case '*':
-            res = BigInteger.Multiply(a, b);
-            break;
-          case '/':
-            res = BigInteger.Divide(a, b);
-            break;
-          default:
-            break;
-        }
-
-        st.Push(res);
-      }
-    }
-    return st.Peek();
-  }
 }
 
 public class TFIDFAnalyzer
@@ -236,30 +196,23 @@ public class TFIDFAnalyzer
   {
     this.path = path;
 
-    bool built = false;
-    if (IsBuilt())
+    if (CanGet())
     {
       GetInfo();
-      this.numberOfDocuments = documents.Count();
-
-      string[] books = Directory.GetFiles(path, "*.txt");
-      if (books.Length == numberOfDocuments)
-      {
-        built = true;
-      } else {
-        DeleteInfo(); Clear();
-      }
+      return;
     }
 
-    if (built) return;
+    DeleteInfo();
 
     try
     {
       Console.WriteLine("Charging...");
+
       string[] directories = Directory.GetFiles(path, "*.txt");
       int currentIndex = 0;
       foreach (var dir in directories)
       {
+        string name = Path.GetFileNameWithoutExtension(dir);
         string text = File.ReadAllText(dir, Encoding.UTF8);
         this.documents.Add(text);
         this.fdocuments.Add(Utils.NormalizeText(text));
@@ -297,17 +250,53 @@ public class TFIDFAnalyzer
       Console.WriteLine($"The process failed: {e.ToString()}");
     }
   }
-  
-  public bool IsBuilt(string database = "../Database")
+
+  public bool CanGet(string database = "../Database")
   {
-    string[] databases = Directory.GetFiles(database, "*.json");
-    if (databases.Length == 8)
+    if (Directory.GetFiles(database, "*.json").Length != 8)
     {
+      return false;
+    }
+
+    string[] books = Directory.GetFiles(path, "*.txt");
+
+    if (File.Exists(database + "/documentTitle.json"))
+    {
+      Dictionary<int, string> dic = new Dictionary<int, string>();
+      string jsonString = File.ReadAllText(database + "/documentTitle.json");
+      dic = JsonSerializer.Deserialize<Dictionary<int, string>>(jsonString)!;
+
+      Dictionary<string, bool> exist = new Dictionary<string, bool>();
+      foreach (var dir in books)
+      {
+        string name = Path.GetFileNameWithoutExtension(dir);
+        exist[name] = true;
+      }
+
+      foreach (var dir in dic.Values)
+      {
+        if (!exist.ContainsKey(dir))
+        {
+          Console.WriteLine($"Not in books {dir}");
+          return false;
+        }
+      }
+
+      foreach (var dir in exist.Keys)
+      {
+        if (!dic.ContainsValue(dir))
+        {
+          Console.WriteLine($"Not in documentTitle {dir}");
+          return false;
+        }
+      }
+
       return true;
     }
+
     return false;
   }
-  
+
   public void SaveInfo(string database = "../Database")
   {
     File.WriteAllText(database + "/TF.json", JsonSerializer.Serialize(TF, new JsonSerializerOptions() { WriteIndented = true }));
@@ -338,9 +327,11 @@ public class TFIDFAnalyzer
     this.fdocuments = JsonSerializer.Deserialize<List<List<string>>>(jsonString)!;
     jsonString = File.ReadAllText(database + "/documentTitle.json");
     this.documentTitle = JsonSerializer.Deserialize<Dictionary<int, string>>(jsonString)!;
+    this.numberOfDocuments = documents.Count();
   }
 
-  public void DeleteInfo(string database = "../Database") {
+  public void DeleteInfo(string database = "../Database")
+  {
     File.Delete(database + "/TF.json");
     File.Delete(database + "/IDF.json");
     File.Delete(database + "/relevance.json");
@@ -348,13 +339,7 @@ public class TFIDFAnalyzer
     File.Delete(database + "/vocabulary.json");
     File.Delete(database + "/documents.json");
     File.Delete(database + "/fdocuments.json");
-    File.Delete(database + "/documentTitle.json");  
-  }
-
-  public void Clear() {
-    TF.Clear(); IDF.Clear(); relevance.Clear();
-    frequency.Clear(); vocabulary.Clear();
-    documents.Clear(); fdocuments.Clear(); documentTitle.Clear();
+    File.Delete(database + "/documentTitle.json");
   }
 
   private void ProcessDocuments(List<string> doc, int index)
@@ -390,6 +375,12 @@ public class TFIDFAnalyzer
     string res = "";
     for (int i = 0; i < words.Length; i++)
     {
+      if (words[i] == "~" || words[i] == "!" || words[i] == "*" || words[i] == "^") {
+        if (i != 0) res += " ";
+        res += words[i];
+        continue;
+      }
+      
       string str = Utils.Tokenizer(words[i]);
 
       double minDist = 100000;
