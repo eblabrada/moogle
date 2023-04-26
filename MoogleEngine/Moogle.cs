@@ -502,7 +502,7 @@ public class TFIDFAnalyzer
     }
 
     den = Utils.Norm(relevance[index]) * Utils.Norm(queryVec);
-
+    
     if (den == 0.0)
     {
       return 0.0;
@@ -521,69 +521,43 @@ public static class SearchEngine
 {
   public static TFIDFAnalyzer allDocuments = new TFIDFAnalyzer("../Content");
 
-  private static SearchItem CalculateSnippet(SearchItem item, string query, int len = 200)
+  private static SearchItem CalculateSnippet(SearchItem item, string query, int len = 100)
   {
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
-    string[] text = item.Snippet.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
-
-    string str = ""; int p = 0;
-    while (p < Math.Min(len / 4, text.Length))
-    {
-      str += text[p] + " ";
-      p++;
-    }
-
-    string snippet = "";
-
+    string[] text = item.Snippet.Split(splitters, StringSplitOptions.RemoveEmptyEntries);    
     string[] queryText = query.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
 
-    int cnt = 0;
-    Queue<string> todo = new Queue<string>();
-    while (p < text.Length && todo.Count() < len / 2)
-    {
-      todo.Enqueue(text[p]);
-      for (int i = 0; i < queryText.Length; i++)
-      {
-        if (Utils.AreSimilar(queryText[i], text[p]))
-        {
-          cnt++;
+    Queue<int> window = new Queue<int>();
+    int r = -1, snippetPos = 0, maxCnt = -1, curCnt = 0;
+    for (int l = 0; l < text.Length; l++) {
+      while (r + 1 < text.Length && r - l < len) {
+        r++;
+        
+        int f = 0;
+        for (int i = 0; i < queryText.Length; i++) {
+          if (Utils.AreSimilar(queryText[i], text[r])) {
+            f += 1;
+          }
         }
+        
+        curCnt += f;
+        window.Enqueue(f);
       }
-      p++;
-    }
-
-    int position = p, maxCnt = cnt;
-    for (int i = p; i < text.Length; i++)
-    {
-      todo.Enqueue(text[p]);
-
-      bool ok = false;
-      for (int j = 0; j < queryText.Length; j++)
-      {
-        if (Utils.AreSimilar(queryText[j], text[i]))
-        {
-          cnt++;
-        }
-
-        if (Utils.AreSimilar(queryText[j], todo.Peek()))
-        {
-          ok = true;
-        }
+      
+      if (maxCnt < curCnt) {
+        maxCnt = curCnt;
+        snippetPos = l;
       }
-
-      todo.Dequeue();
-
-      if (ok) cnt--;
-
-      if (cnt > maxCnt)
-      {
-        position = i;
-        maxCnt = cnt;
+      
+      if (window.Count() > 0) {
+        curCnt -= window.Peek();
+        window.Dequeue();      
       }
     }
-
-    for (int i = Math.Max(0, position - len / 2); i <= Math.Min(position, text.Length - 1); i++)
-    {
+    
+    string snippet = "";  
+    
+    for (int i = snippetPos; i < Math.Min(text.Length, snippetPos + len); i++) {
       snippet = snippet + text[i] + " ";
     }
 
