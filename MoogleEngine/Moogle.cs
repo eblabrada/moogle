@@ -380,7 +380,7 @@ public class TFIDFAnalyzer
         res += words[i];
         continue;
       }
-      
+
       string str = Utils.Tokenizer(words[i]);
 
       double minDist = 100000;
@@ -502,7 +502,7 @@ public class TFIDFAnalyzer
     }
 
     den = Utils.Norm(relevance[index]) * Utils.Norm(queryVec);
-    
+
     if (den == 0.0)
     {
       return 0.0;
@@ -524,7 +524,7 @@ public static class SearchEngine
   private static SearchItem CalculateSnippet(SearchItem item, string query, int len = 100)
   {
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
-    string[] text = item.Snippet.Split(splitters, StringSplitOptions.RemoveEmptyEntries);    
+    string[] text = item.Snippet.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
     string[] queryText = query.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
 
     Queue<int> window = new Queue<int>();
@@ -532,31 +532,31 @@ public static class SearchEngine
     for (int l = 0; l < text.Length; l++) {
       while (r + 1 < text.Length && r - l < len) {
         r++;
-        
+
         int f = 0;
         for (int i = 0; i < queryText.Length; i++) {
           if (Utils.AreSimilar(queryText[i], text[r])) {
             f += 1;
           }
         }
-        
+
         curCnt += f;
         window.Enqueue(f);
       }
-      
+
       if (maxCnt < curCnt) {
         maxCnt = curCnt;
         snippetPos = l;
       }
-      
+
       if (window.Count() > 0) {
         curCnt -= window.Peek();
-        window.Dequeue();      
+        window.Dequeue();
       }
     }
-    
-    string snippet = "";  
-    
+
+    string snippet = "";
+
     for (int i = snippetPos; i < Math.Min(text.Length, snippetPos + len); i++) {
       snippet = snippet + text[i] + " ";
     }
