@@ -9,7 +9,6 @@ using System.Text.Json;
 public class Trie
 {
   const int MaxLen = 100000, AlphaLen = 500;
-
   private char[] alphabet = new char[MaxLen + 1];
   private List<int>[] child = new List<int>[MaxLen + 1];
   private int[] parent = new int[MaxLen + 1];
@@ -566,7 +565,6 @@ public class TFIDFAnalyzer
         res *= more * Math.Log(frequency[index][word]);
       }
     }
-
     return res;
   }
 
@@ -590,7 +588,6 @@ public class TFIDFAnalyzer
       if (minDist == 0) minDist = 1;
       res *= 2.0 / (Math.Log(minDist) + 1);
     }
-
     return res;
   }
 
@@ -753,7 +750,6 @@ public static class SearchEngine
 
       res.Add(CalculateSnippet(new SearchItem(title, snippet, (float)items[i].Item1), query));
     }
-
     return (res, suggest);
   }
 }
