@@ -6,6 +6,87 @@ using System.Text;
 using System.Numerics;
 using System.Text.Json;
 
+public class Trie
+{
+  const int MaxLen = 100000, AlphaLen = 500;
+
+  private char[] alphabet = new char[MaxLen + 1];
+  private List<int>[] child = new List<int>[MaxLen + 1];
+  private int[] parent = new int[MaxLen + 1];
+  private int[] nodeCnt = new int[MaxLen + 1];
+  private int curNode = 0;
+
+  private void CreateNode(char c, int par)
+  {
+    this.alphabet[curNode] = c;
+    this.parent[curNode] = par;
+    this.child[curNode] = new List<int>(new int[AlphaLen]);
+    this.curNode++;
+  }
+
+  public Trie()
+  {
+    CreateNode('$', -1);
+  }
+
+  public void Insert(string word)
+  {
+    int cur = 0;
+    for (int i = 0; i < word.Length; i++)
+    {
+      int alphaNum = (int)word[i];
+      if (child[cur][alphaNum] == 0)
+      {
+        child[cur][alphaNum] = curNode;
+        CreateNode(word[i], cur);
+      }
+      cur = child[cur][alphaNum];
+      nodeCnt[cur]++;
+    }
+  }
+
+  public int MaxLCP(string word)
+  {
+    int cur = 0, lcp = 0;
+    for (int i = 0; i < word.Length; i++)
+    {
+      int alphaNum = (int)word[i];
+      if (child[cur][alphaNum] == 0)
+      {
+        break;
+      }
+      cur = child[cur][alphaNum];
+      lcp++;
+    }
+
+    return lcp;
+  }
+
+  public double PrefixRelevance(string word, double percent = 80.0)
+  {
+    double res = 0.0;
+    int expectedLen = (int)(word.Length * percent / 100.0);
+    int cur = 0, lcp = 0;
+    for (int i = 0; i < word.Length; i++)
+    {
+      int alphaNum = (int)word[i];
+      if (child[cur][alphaNum] == 0)
+      {
+        break;
+      }
+      cur = child[cur][alphaNum];
+      lcp++;
+
+      if (lcp >= expectedLen)
+      {
+        res += ((double)lcp / expectedLen) * Math.Log(nodeCnt[cur] + 1);
+      }
+    }
+
+    return res;
+  }
+}
+
 public static class Utils
 {
   public static int EditDistance(string a, string b)
@@ -43,7 +124,7 @@ public static class Utils
 
     return dp[n & 1, m];
   }
-  
+
   public static int LongestCommonPrefix(string a, string b)
   {
     int cnt = 0;
@@ -60,14 +141,14 @@ public static class Utils
     }
     return cnt;
   }
-  
+
   public static double Distance(string a, string b)
   {
     int lcp = LongestCommonPrefix(a, b);
     if (lcp == 0) return EditDistance(a, b);
     return (double)EditDistance(a, b) / (double)LongestCommonPrefix(a, b);
   }
-  
+
   public static bool AreSimilar(string a, string b)
   {
     a = a.ToLower(); b = b.ToLower();
@@ -97,7 +178,7 @@ public static class Utils
     }
     return res.ToLower();
   }
-  
+
   public static List<string> NormalizeText(string text)
   {
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
@@ -113,7 +194,7 @@ public static class Utils
     }
     return res;
   }
-  
+
   public static string[] GetNeed(string[] words)
   {
     List<string> res = new List<string>();
@@ -126,7 +207,7 @@ public static class Utils
     }
     return res.ToArray();
   }
-  
+
   public static string[] GetForbidden(string[] words)
   {
     List<string> res = new List<string>();
@@ -195,6 +276,7 @@ public class TFIDFAnalyzer
   public List<List<string>> fdocuments = new List<List<string>>();
   public Dictionary<int, string> documentTitle = new Dictionary<int, string>();
   public int numberOfDocuments = 0;
+  public List<Trie> documentTrie = new List<Trie>();
 
   public TFIDFAnalyzer(string path)
   {
@@ -249,6 +331,21 @@ public class TFIDFAnalyzer
         }
       }
 
+      Console.WriteLine("Adding information to the Trie...\n");
+
+      for (int i = 0; i < numberOfDocuments; i++)
+      {
+        documentTrie.Add(new Trie());
+      }
+
+      for (int i = 0; i < fdocuments.Count(); i++)
+      {
+        foreach (var word in fdocuments[i])
+        {
+          documentTrie[i].Insert(word);
+        }
+      }
+
       SaveInfo();
 
       Console.WriteLine("All is working fine!");
@@ -261,7 +358,7 @@ public class TFIDFAnalyzer
 
   public bool CanGet(string database = "../Database")
   {
-    if (Directory.GetFiles(database, "*.json").Length != 8)
+    if (Directory.GetFiles(database, "*.json").Length != 9)
     {
       return false;
     }
@@ -298,7 +395,9 @@ public class TFIDFAnalyzer
           return false;
         }
       }
-      
+
+      Console.WriteLine("\n");
+
       return true;
     }
     return false;
@@ -306,14 +405,15 @@ public class TFIDFAnalyzer
 
   public void SaveInfo(string database = "../Database")
   {
-    File.WriteAllText(database + "/TF.json", JsonSerializer.Serialize(TF, new JsonSerializerOptions() { WriteIndented = true }));
-    File.WriteAllText(database + "/IDF.json", JsonSerializer.Serialize(IDF, new JsonSerializerOptions() { WriteIndented = true }));
-    File.WriteAllText(database + "/relevance.json", JsonSerializer.Serialize(relevance, new JsonSerializerOptions() { WriteIndented = true }));
-    File.WriteAllText(database + "/frequency.json", JsonSerializer.Serialize(frequency, new JsonSerializerOptions() { WriteIndented = true }));
-    File.WriteAllText(database + "/vocabulary.json", JsonSerializer.Serialize(vocabulary, new JsonSerializerOptions() { WriteIndented = true }));
-    File.WriteAllText(database + "/documents.json", JsonSerializer.Serialize(documents, new JsonSerializerOptions() { WriteIndented = true }));
-    File.WriteAllText(database + "/fdocuments.json", JsonSerializer.Serialize(fdocuments, new JsonSerializerOptions() { WriteIndented = true }));
-    File.WriteAllText(database + "/documentTitle.json", JsonSerializer.Serialize(documentTitle, new JsonSerializerOptions() { WriteIndented = true }));
+    File.WriteAllText(database + "/TF.json", JsonSerializer.Serialize(TF));
+    File.WriteAllText(database + "/IDF.json", JsonSerializer.Serialize(IDF));
+    File.WriteAllText(database + "/relevance.json", JsonSerializer.Serialize(relevance));
+    File.WriteAllText(database + "/frequency.json", JsonSerializer.Serialize(frequency));
+    File.WriteAllText(database + "/vocabulary.json", JsonSerializer.Serialize(vocabulary));
+    File.WriteAllText(database + "/documents.json", JsonSerializer.Serialize(documents));
+    File.WriteAllText(database + "/fdocuments.json", JsonSerializer.Serialize(fdocuments));
+    File.WriteAllText(database + "/documentTitle.json", JsonSerializer.Serialize(documentTitle));
+    File.WriteAllText(database + "/documentTrie", JsonSerializer.Serialize(documentTrie));
   }
 
   public void GetInfo(string database = "../Database")
@@ -334,6 +434,8 @@ public class TFIDFAnalyzer
     this.fdocuments = JsonSerializer.Deserialize<List<List<string>>>(jsonString)!;
     jsonString = File.ReadAllText(database + "/documentTitle.json");
     this.documentTitle = JsonSerializer.Deserialize<Dictionary<int, string>>(jsonString)!;
+    jsonString = File.ReadAllText(database + "/documentTrie.json");
+    this.documentTrie = JsonSerializer.Deserialize<List<Trie>>(jsonString)!;
     this.numberOfDocuments = documents.Count();
   }
 
@@ -347,6 +449,7 @@ public class TFIDFAnalyzer
     File.Delete(database + "/documents.json");
     File.Delete(database + "/fdocuments.json");
     File.Delete(database + "/documentTitle.json");
+    File.Delete(database + "/documentTrie.json");
   }
 
   private void ProcessDocuments(List<string> doc, int index)
@@ -518,6 +621,18 @@ public class TFIDFAnalyzer
     res *= OperatorNotIn(forb, index);
     res *= OperatorMore(more, index);
     res *= OperatorNear(near, index);
+
+    double trieRes = 0;
+    foreach (var word in queryVec.Keys)
+    {
+      trieRes += documentTrie[index].PrefixRelevance(word);
+    }
+
+    if (trieRes >= 1.0)
+    {
+      res *= trieRes;
+    }
+
     return res;
   }
 }
@@ -605,25 +720,27 @@ public static class SearchEngine
     {
       QTF[term] /= (double)words.Length;
     }
-    
+
     bool flag = false;
-    
+
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocuments.numberOfDocuments; i++)
     {
       double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more, near);
       if (similarity == 0) continue;
-      
-      if (flag == false) {
+
+      if (flag == false)
+      {
         Console.WriteLine("The results are:");
         flag = true;
       }
-      
+
       Console.WriteLine($"  * {allDocuments.documentTitle[i]} with similarity {similarity}");
       items.Add((similarity, i));
     }
-    
-    if (flag == false) {
+
+    if (flag == false)
+    {
       Console.WriteLine("No results for this query :( Try with the suggestions");
     }
 
@@ -650,25 +767,29 @@ public static class Moogle
     var watch = System.Diagnostics.Stopwatch.StartNew();
 
     var res = SearchEngine.FindItems(query);
-    
-    if (alsoSuggestions == true) {
+
+    if (alsoSuggestions == true)
+    {
       Console.WriteLine("\nQuerying also for suggestions...\n");
-    
+
       Dictionary<string, bool> areUsed = new Dictionary<string, bool>();
-      foreach (var x in res.Item1) {
+      foreach (var x in res.Item1)
+      {
         areUsed[x.Title] = true;
       }
-        
+
       var res2 = SearchEngine.FindItems(res.Item2);
-    
-      foreach (var x in res2.Item1) {
-        if (areUsed.ContainsKey(x.Title)) {
+
+      foreach (var x in res2.Item1)
+      {
+        if (areUsed.ContainsKey(x.Title))
+        {
           continue;
         }
         res.Item1.Add(x);
       }
     }
-      
+
     Console.WriteLine($"\nTime elapsed (s): {watch.ElapsedMilliseconds / 1000}\n");
 
     SearchItem[] items = res.Item1.ToArray();
