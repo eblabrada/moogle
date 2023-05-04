@@ -43,6 +43,7 @@ public static class Utils
 
     return dp[n & 1, m];
   }
+  
   public static int LongestCommonPrefix(string a, string b)
   {
     int cnt = 0;
@@ -59,12 +60,14 @@ public static class Utils
     }
     return cnt;
   }
+  
   public static double Distance(string a, string b)
   {
     int lcp = LongestCommonPrefix(a, b);
     if (lcp == 0) return EditDistance(a, b);
     return (double)EditDistance(a, b) / (double)LongestCommonPrefix(a, b);
   }
+  
   public static bool AreSimilar(string a, string b)
   {
     a = a.ToLower(); b = b.ToLower();
@@ -78,9 +81,7 @@ public static class Utils
   public static string Capitalize(string word)
   {
     if (word.Length == 0) return word;
-
     string res = word[0].ToString().ToUpper() + word.Substring(1);
-
     return res;
   }
 
@@ -94,9 +95,9 @@ public static class Utils
         res += word[i];
       }
     }
-
     return res.ToLower();
   }
+  
   public static List<string> NormalizeText(string text)
   {
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
@@ -112,6 +113,7 @@ public static class Utils
     }
     return res;
   }
+  
   public static string[] GetNeed(string[] words)
   {
     List<string> res = new List<string>();
@@ -124,6 +126,7 @@ public static class Utils
     }
     return res.ToArray();
   }
+  
   public static string[] GetForbidden(string[] words)
   {
     List<string> res = new List<string>();
@@ -295,10 +298,9 @@ public class TFIDFAnalyzer
           return false;
         }
       }
-
+      
       return true;
     }
-
     return false;
   }
 
@@ -422,7 +424,6 @@ public class TFIDFAnalyzer
         ind--;
       }
     }
-
     return res;
   }
 
@@ -435,7 +436,6 @@ public class TFIDFAnalyzer
         return 0.0;
       }
     }
-
     return 1.0;
   }
 
@@ -448,7 +448,6 @@ public class TFIDFAnalyzer
         return 0.0;
       }
     }
-
     return 1.0;
   }
 
@@ -606,21 +605,32 @@ public static class SearchEngine
     {
       QTF[term] /= (double)words.Length;
     }
-
+    
+    bool flag = false;
+    
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocuments.numberOfDocuments; i++)
     {
       double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more, near);
       if (similarity == 0) continue;
-      Console.WriteLine($"{allDocuments.documentTitle[i]} with similarity {similarity}");
+      
+      if (flag == false) {
+        Console.WriteLine("The results are:");
+        flag = true;
+      }
+      
+      Console.WriteLine($"  * {allDocuments.documentTitle[i]} with similarity {similarity}");
       items.Add((similarity, i));
+    }
+    
+    if (flag == false) {
+      Console.WriteLine("No results for this query :( Try with the suggestions");
     }
 
     items.Sort(); items.Reverse();
     List<SearchItem> res = new List<SearchItem>();
     for (int i = 0; i < items.Count(); i++)
     {
-
       string title = allDocuments.documentTitle[items[i].Item2];
       string snippet = allDocuments.documents[items[i].Item2];
 
@@ -633,15 +643,33 @@ public static class SearchEngine
 
 public static class Moogle
 {
-  public static SearchResult Query(string query)
+  public static SearchResult Query(string query, bool alsoSuggestions = true)
   {
     Console.WriteLine("Processing new query...\n");
 
     var watch = System.Diagnostics.Stopwatch.StartNew();
 
     var res = SearchEngine.FindItems(query);
-
-    Console.WriteLine($"Time elapsed (s): {watch.ElapsedMilliseconds / 1000}\n");
+    
+    if (alsoSuggestions == true) {
+      Console.WriteLine("\nQuerying also for suggestions...\n");
+    
+      Dictionary<string, bool> areUsed = new Dictionary<string, bool>();
+      foreach (var x in res.Item1) {
+        areUsed[x.Title] = true;
+      }
+        
+      var res2 = SearchEngine.FindItems(res.Item2);
+    
+      foreach (var x in res2.Item1) {
+        if (areUsed.ContainsKey(x.Title)) {
+          continue;
+        }
+        res.Item1.Add(x);
+      }
+    }
+      
+    Console.WriteLine($"\nTime elapsed (s): {watch.ElapsedMilliseconds / 1000}\n");
 
     SearchItem[] items = res.Item1.ToArray();
 
