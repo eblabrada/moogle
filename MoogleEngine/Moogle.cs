@@ -94,6 +94,7 @@ public static class Utils
         res += word[i];
       }
     }
+
     return res.ToLower();
   }
   public static List<string> NormalizeText(string text)
@@ -206,7 +207,7 @@ public class TFIDFAnalyzer
 
     try
     {
-      Console.WriteLine("Charging...");
+      Console.WriteLine("Charging all documents...\n");
 
       string[] directories = Directory.GetFiles(path, "*.txt");
       int currentIndex = 0;
@@ -221,6 +222,8 @@ public class TFIDFAnalyzer
       }
 
       this.numberOfDocuments = documents.Count();
+
+      Console.WriteLine("Processing TF-IDF for documents...\n");
 
       for (int i = 0; i < numberOfDocuments; i++)
       {
@@ -244,6 +247,8 @@ public class TFIDFAnalyzer
       }
 
       SaveInfo();
+
+      Console.WriteLine("All is working fine!");
     }
     catch (Exception e)
     {
@@ -375,7 +380,8 @@ public class TFIDFAnalyzer
     string res = "";
     for (int i = 0; i < words.Length; i++)
     {
-      if (words[i] == "~" || words[i] == "!" || words[i] == "*" || words[i] == "^") {
+      if (words[i] == "~" || words[i] == "!" || words[i] == "*" || words[i] == "^")
+      {
         if (i != 0) res += " ";
         res += words[i];
         continue;
@@ -529,13 +535,17 @@ public static class SearchEngine
 
     Queue<int> window = new Queue<int>();
     int r = -1, snippetPos = 0, maxCnt = -1, curCnt = 0;
-    for (int l = 0; l < text.Length; l++) {
-      while (r + 1 < text.Length && r - l < len) {
+    for (int l = 0; l < text.Length; l++)
+    {
+      while (r + 1 < text.Length && r - l < len)
+      {
         r++;
 
         int f = 0;
-        for (int i = 0; i < queryText.Length; i++) {
-          if (Utils.AreSimilar(queryText[i], text[r])) {
+        for (int i = 0; i < queryText.Length; i++)
+        {
+          if (Utils.AreSimilar(queryText[i], text[r]))
+          {
             f += 1;
           }
         }
@@ -544,12 +554,14 @@ public static class SearchEngine
         window.Enqueue(f);
       }
 
-      if (maxCnt < curCnt) {
+      if (maxCnt < curCnt)
+      {
         maxCnt = curCnt;
         snippetPos = l;
       }
 
-      if (window.Count() > 0) {
+      if (window.Count() > 0)
+      {
         curCnt -= window.Peek();
         window.Dequeue();
       }
@@ -557,7 +569,8 @@ public static class SearchEngine
 
     string snippet = "";
 
-    for (int i = snippetPos; i < Math.Min(text.Length, snippetPos + len); i++) {
+    for (int i = snippetPos; i < Math.Min(text.Length, snippetPos + len); i++)
+    {
       snippet = snippet + text[i] + " ";
     }
 
@@ -622,14 +635,13 @@ public static class Moogle
 {
   public static SearchResult Query(string query)
   {
-    Console.WriteLine("..... New Query .....");
+    Console.WriteLine("Processing new query...\n");
 
     var watch = System.Diagnostics.Stopwatch.StartNew();
 
     var res = SearchEngine.FindItems(query);
 
-    Console.WriteLine($"Time elapsed (s): {watch.ElapsedMilliseconds / 1000}");
-    Console.WriteLine("");
+    Console.WriteLine($"Time elapsed (s): {watch.ElapsedMilliseconds / 1000}\n");
 
     SearchItem[] items = res.Item1.ToArray();
 
