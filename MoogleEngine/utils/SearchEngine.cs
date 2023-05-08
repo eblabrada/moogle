@@ -66,7 +66,7 @@ public static class SearchEngine
     return new SearchItem(item.Title, snippet, item.Score);
   }
 
-  public static (List<SearchItem>, string) FindItems(string query)
+  public static (List<SearchItem>, string) FindItems(string query, double factor = 1.0)
   {
     string suggest = allDocuments.Suggestion(query);
 
@@ -127,7 +127,7 @@ public static class SearchEngine
       string title = allDocuments.documentTitle[items[i].Item2];
       string snippet = allDocuments.documents[items[i].Item2];
 
-      res.Add(CalculateSnippet(new SearchItem(title, snippet, (float)items[i].Item1), query));
+      res.Add(CalculateSnippet(new SearchItem(title, snippet, (float)(items[i].Item1 / factor)), query));
     }
     return (res, suggest);
   }

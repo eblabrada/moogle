@@ -83,7 +83,12 @@ Están implementados y se pueden usar sin problemas de ningún tipo los siguient
  * `*`: cualquier cantidad de símbolos `*` delante de un término indican que ese término es más importante, por lo que su influencia en el `score` debe ser mayor que la tendría normalmente (este efecto será acumulativo por cada `*`)
  
 > Nota: Es importante tener en cuenta que para que estos operadores tengan algún efecto en los resultados deben ser usados correctamente. 
+> * En el caso de los operadores `!`, `^` y `*` deben aparecer como prefijo de la palabra. Por ejemplo, `!word`, `^word`, `****word` usan correctamente estos operadores; pero `! word`, `^ word`, `**** word` no lo usan correctamente.
+> * En el caso del operador `~` se requiere que esté separado de las palabras a las que se le aplica la operación, por ejemplo, `word1 ~ word2 ~ word3`, `word1 ~ word2`, son usos correctos de este operador, pero `word1~word2~word3`, `word1~word2` no son usos correctos de este operador. 
+> * No se debe usar dos operadores para una misma palabra al mismo tiempo, por ejemplo `**word1 ~ !word2`, `!*****word`, `^*word`, `!^word` son incorrectos usos de los operadores.
+ 
+## Otras funcionalidades
 
- * En el caso de los operadores `!`, `^` y `*` deben aparecer como prefijo de la palabra. Por ejemplo, `!word`, `^word`, `****word` usan correctamente estos operadores; pero `! word`, `^ word`, `**** word` no lo usan correctamente.
- * En el caso del operador `~` se requiere que esté separado de las palabras a las que se le aplica la operación, por ejemplo, `word1 ~ word2 ~ word3`, `word1 ~ word2`, son usos correctos de este operador, pero `word1~word2~word3`, `word1~word2` no son usos correctos de este operador. 
- * No se debe usar dos operadores para una misma palabra al mismo tiempo, por ejemplo `**word1 ~ !word2`, `!*****word`, `^*word`, `!^word` son incorrectos usos de los operadores.
+Para hacer las sugerencias de búsqueda utilizo `Levenshtein distance` calculando la mínima distancia de cada palabra de la `query` a las palabras en el vocabulario (el vocabulario contiene todas las palabras que aparecen en los documentos).
+
+Además de hacer sugerencias para la búsqueda también busca los resultados para esta sugerencia, pero las devuelve con un menor `score`.

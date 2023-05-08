@@ -24,7 +24,7 @@ public static class Moogle
         areUsed[x.Title] = true;
       }
 
-      var res2 = SearchEngine.FindItems(res.Item2);
+      var res2 = SearchEngine.FindItems(res.Item2, 2.0);
 
       foreach (var x in res2.Item1)
       {
