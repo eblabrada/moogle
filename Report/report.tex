@@ -147,5 +147,21 @@ Siendo:
 
 \section*{Sobre la implementaci\'on}
 
+\subsection*{\tt Utils.cs}
+
+Esta clase est\'a principalmente para m\'etodos que son necesarios en varias clases del
+proyecto.
+
+\begin{itemize}
+	\item {\tt int EditDistance(string a, string b)}:  es el menor n\'umero de operaciones de edici\'on
+que se deben hacer para igualar ambas cadenas (las operaciones son insertar un caracter, eliminar un caracter, cambiar un caracter). 
+	\item {\tt int LongestCommonPrefix(string a, string b)}: esta clase recibe dos cadenas y
+devuelve el prefijo com\'un m\'as largo de dichas cadenas.
+	\item {\tt double Distance(string a, string b)}: devuelve la similitud de dos cadenas
+esta funci\'on retorna utilizando el {\tt EditDistance} (en lo adelante $ED$) y el 
+{\tt LongestCommonPrefix} (en lo adelante $LCP$) de dos cadenas, la distancia que existe 
+entre ellas. En este m\'etodo utilizo $\frac{ED}{LCP}$ bas\'andome en que {\tt picta} y {\tt picture}
+\end{itemize}
+
 
 \end{document}

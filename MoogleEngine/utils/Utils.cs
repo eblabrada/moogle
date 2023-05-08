@@ -4,6 +4,10 @@ public static class Utils
 {
   public static int EditDistance(string a, string b)
   {
+    if (a.Length < b.Length) {
+      (a, b) = (b, a); // swap
+    }
+    
     int n = a.Length, m = b.Length;
 
     int[,] dp = new int[2, m + 1];
@@ -84,7 +88,7 @@ public static class Utils
     string res = "";
     for (int i = 0; i < word.Length; i++)
     {
-      if (Char.IsLetterOrDigit(word[i]))
+      if (Char.IsAscii(word[i]) && Char.IsLetterOrDigit(word[i]))
       {
         res += word[i];
       }

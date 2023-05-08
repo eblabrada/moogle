@@ -70,20 +70,20 @@ public class TFIDFAnalyzer
         }
       }
 
-      Console.WriteLine("Adding information to the Trie...\n");
+      // Console.WriteLine("Adding information to the Trie...\n");
 
-      for (int i = 0; i < numberOfDocuments; i++)
-      {
-        documentTrie.Add(new Trie());
-      }
+      // for (int i = 0; i < numberOfDocuments; i++)
+      // {
+      //   documentTrie.Add(new Trie());
+      // }
 
-      for (int i = 0; i < fdocuments.Count(); i++)
-      {
-        foreach (var word in fdocuments[i])
-        {
-          documentTrie[i].Insert(word);
-        }
-      }
+      // for (int i = 0; i < fdocuments.Count(); i++)
+      // {
+      //   foreach (var word in fdocuments[i])
+      //   {
+      //     documentTrie[i].Insert(word);
+      //   }
+      // }
 
       SaveInfo();
 
@@ -152,7 +152,7 @@ public class TFIDFAnalyzer
     File.WriteAllText(database + "/documents.json", JsonSerializer.Serialize(documents));
     File.WriteAllText(database + "/fdocuments.json", JsonSerializer.Serialize(fdocuments));
     File.WriteAllText(database + "/documentTitle.json", JsonSerializer.Serialize(documentTitle));
-    File.WriteAllText(database + "/documentTrie", JsonSerializer.Serialize(documentTrie));
+    // File.WriteAllText(database + "/documentTrie", JsonSerializer.Serialize(documentTrie));
   }
 
   public void GetInfo(string database = "../Database")
@@ -173,8 +173,8 @@ public class TFIDFAnalyzer
     this.fdocuments = JsonSerializer.Deserialize<List<List<string>>>(jsonString)!;
     jsonString = File.ReadAllText(database + "/documentTitle.json");
     this.documentTitle = JsonSerializer.Deserialize<Dictionary<int, string>>(jsonString)!;
-    jsonString = File.ReadAllText(database + "/documentTrie.json");
-    this.documentTrie = JsonSerializer.Deserialize<List<Trie>>(jsonString)!;
+    // jsonString = File.ReadAllText(database + "/documentTrie.json");
+    // this.documentTrie = JsonSerializer.Deserialize<List<Trie>>(jsonString)!;
     this.numberOfDocuments = documents.Count();
   }
 
@@ -188,7 +188,7 @@ public class TFIDFAnalyzer
     File.Delete(database + "/documents.json");
     File.Delete(database + "/fdocuments.json");
     File.Delete(database + "/documentTitle.json");
-    File.Delete(database + "/documentTrie.json");
+    // File.Delete(database + "/documentTrie.json");
   }
 
   private void ProcessDocuments(List<string> doc, int index)
