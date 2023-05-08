@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage[total={18cm,21cm},top=2cm, left=2cm]{geometry}
 \usepackage{xcolor}
-\usepackage{amsmath, amssymb, amsfonts, cancel}
+\usepackage{amsmath, amssymb, amsfonts}
 \usepackage{url, hyperref}
 
 %poner codigo fuente en latex
@@ -28,11 +28,31 @@
 	commentstyle=\color{gray45},
 	keywordstyle=\bfseries,
 	%
-	numbers=left,
+	numbers=none,
 	numbersep=15pt,
 	numberstyle=\tiny,
 	numberfirstline = false,
 	breaklines=true,
+}
+
+\usepackage{listings}
+\lstset{ frame=Ltb,
+	framerule=0pt,
+	aboveskip=0.5cm,
+	framextopmargin=2pt,
+	framexbottommargin=2pt,
+	framexleftmargin=0.4cm,
+	framesep=0pt,
+	rulesep=.4pt,
+	backgroundcolor=\color{white},
+	rulesepcolor=\color{black},
+	%
+	stringstyle=\ttfamily,
+	showstringspaces = false,
+	basicstyle=\small\ttfamily,
+	commentstyle=\color{gray45},
+	keywordstyle=\bfseries,
+	%
 }
 
 % minimizar fragmentado de listados
@@ -40,16 +60,50 @@
 {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
 
 \lstdefinestyle{consola}
-{basicstyle=\scriptsize\bf\ttfamily,backgroundcolor=\color{gray75},}
+{basicstyle=\scriptsize\bf\ttfamily}
 
 \lstdefinestyle{}{language=c++,}
 
 \begin{document}
 
-\title{}
+\title{\bf \LARGE Moogle!}
 \author{Eduardo Brito Labrada}
-\date{}
+\date{\today}
 
 \maketitle
+
+\section{Una breve introducci\'on}
+
+Moogle! es una aplicación {\it totalmente original} cuyo propósito es buscar inteligentemente un texto en un conjunto de documentos. Es una aplicación web, desarrollada con tecnología {\tt \color{gray45}.NET Core 6.0}, específicamente usando Blazor como {\it framework} web para la interfaz gráfica, y en el lenguaje {\tt \color{gray45} C\#}.
+La aplicación está dividida en dos componentes fundamentales:
+
+\begin{itemize}
+	\item {\tt \color{gray45} MoogleServer} es un servidor web que renderiza la interfaz gráfica y sirve los resultados.
+	\item {\tt \color{gray45} MoogleEngine} es una biblioteca de clases donde está\dots ehem\dots casi implementada la lógica del algoritmo de búsqueda.
+\end{itemize}
+
+\subsection{?`Para qu\'e sirve?}
+
+La idea original del proyecto es buscar en un conjunto de archivos de texto (con extensión {\tt \color{gray45} .txt}) que estén en la carpeta {\tt \color{gray45}Content}.
+
+\subsection{?`C\'omo usarlo?}
+
+Primeramente, se aconseja a quien use esta aplicaci\'on tener instalado \href{https://es.wikipedia.org/wiki/Linux}{Linux}, ya que no se garantiza la misma eficiencia si esta en un dispositivo que use Windows.
+En caso de tener instalado Windows, puede optar por \href{https://learn.microsoft.com/es-es/windows/wsl/install}{instalar Windows Subsystem for Linux (WSL)} que a\~nade
+funcionalidades de Linux en Windows.
+
+\subsubsection*{Instrucciones}
+
+Lo primero que tendrás que hacer para poder trabajar en este proyecto es \href{https://learn.microsoft.com/es-es/dotnet/core/install/}{instalar {\tt \color{gray45}.NET Core 6.0}}.
+Luego, te debes parar en la carpeta del proyecto y dependiendo de tu Sistema Operativo hacer lo siguiente:
+
+\begin{itemize}
+	\item {\bf Linux:} Debes tener instalado {\tt \color{gray45} make}. Si no lo tienes instalado
+puedes instalarlo usando {\tt \color{gray45}sudo apt update \&\& sudo apt install make}. Luego podr\'as hacer {\tt \color{gray45}make dev}
+	
+	\item {\bf Windows:} Deberías poder ejecutar este proyecto usando {\tt \color{gray45}dotnet watch run --project MoogleServer}
+\end{itemize}
+
+Despu\'es de hacer lo anterior podr\'as abrir en tu navegador \href{http://localhost:5000}{http://localhost:5000} y podr\'as usar Moogle!
 
 \end{document}
