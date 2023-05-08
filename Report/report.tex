@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 \usepackage[total={18cm,21cm},top=2cm, left=2cm]{geometry}
 \usepackage{xcolor}
 \usepackage{amsmath, amssymb, amsfonts}
@@ -72,7 +72,7 @@
 
 \maketitle
 
-\section{Una breve introducci\'on}
+\section*{Una breve introducci\'on}
 
 Moogle! es una aplicación {\it totalmente original} cuyo propósito es buscar inteligentemente un texto en un conjunto de documentos. Es una aplicación web, desarrollada con tecnología {\tt \color{gray45}.NET Core 6.0}, específicamente usando Blazor como {\it framework} web para la interfaz gráfica, y en el lenguaje {\tt \color{gray45} C\#}.
 La aplicación está dividida en dos componentes fundamentales:
@@ -82,11 +82,11 @@ La aplicación está dividida en dos componentes fundamentales:
 	\item {\tt \color{gray45} MoogleEngine} es una biblioteca de clases donde está\dots ehem\dots casi implementada la lógica del algoritmo de búsqueda.
 \end{itemize}
 
-\subsection{?`Para qu\'e sirve?}
+\subsection*{?`Para qu\'e sirve?}
 
 La idea original del proyecto es buscar en un conjunto de archivos de texto (con extensión {\tt \color{gray45} .txt}) que estén en la carpeta {\tt \color{gray45}Content}.
 
-\subsection{?`C\'omo usarlo?}
+\subsection*{?`C\'omo usarlo?}
 
 Primeramente, se aconseja a quien use esta aplicaci\'on tener instalado \href{https://es.wikipedia.org/wiki/Linux}{Linux}, ya que no se garantiza la misma eficiencia si esta en un dispositivo que use Windows.
 En caso de tener instalado Windows, puede optar por \href{https://learn.microsoft.com/es-es/windows/wsl/install}{instalar Windows Subsystem for Linux (WSL)} que a\~nade
@@ -104,6 +104,48 @@ puedes instalarlo usando {\tt \color{gray45}sudo apt update \&\& sudo apt instal
 	\item {\bf Windows:} Deberías poder ejecutar este proyecto usando {\tt \color{gray45}dotnet watch run --project MoogleServer}
 \end{itemize}
 
-Despu\'es de hacer lo anterior podr\'as abrir en tu navegador \href{http://localhost:5000}{http://localhost:5000} y podr\'as usar Moogle!
+Despu\'es de hacer lo anterior abre en tu navegador \href{http://localhost:5000}{http://localhost:5000} y podr\'as usar Moogle! introduciendo tu b\'usqueda en la ``entrada'' y luego presionando el bot\'on ``Buscar''.
+
+\section*{Motor de b\'usqueda}
+
+El motor de búsqueda usa un modelo vectorial que nos computa para una {\it query} dada 
+qué tan relevante es un documento determinado. Este modelo vectorial usa  {\it Term Frequency and Inverse Document Frequency (TF-IDF)} con 
+{\it Cosine Similarity} para computar la relevancia. 
+
+Para computar el vector {\it TF-IDF} uso la fórmula:
+
+\[ TFIDF = (\frac{tf}{tw}) \times \ln(\frac{td}{dt}) \]
+
+En esta fórmula tenemos que:
+\begin{itemize}
+ \item $tf$ es la frecuencia del término en el documento actual.
+ \item $tw$ es la cantidad de palabras totales en el documento actual.
+ \item $td$ es la cantidad total de documentos a analizar.
+ \item $dt$ es la cantidad de documentos que contienen el término.
+\end{itemize}
+
+{\bf \color{red} Nota importante}: dado que $\frac{td}{dt}$ puede causar problemas por la 
+división entre $0$ decidí que si $dt = 0$ luego $TFIDF = 0$, tiene sentido hacer esto ya 
+que si $dt = 0$ el término no aparece en ningún documento.\\
+
+Después de hacer lo anterior necesitamos calcular la ``similitud'' entre el vector de 
+{\it document} y el vector de la {\it query}, que para eso utilizo 
+{\it Cosine Similarity}. 
+Para hacer esto intentamos estimar el ``ángulo'' comprendido entre el vector de la 
+{\it query} y el vector de {\it document}: mientras menor sea este ángulo, mayor 
+``similitud'' tendrán estos vectores. Esto lo hacemos usando la fórmula:
+
+\[\cos \alpha = \frac{v_d \cdot v_q}{||v_d|| ~ ||v_q||}\]
+
+Siendo:
+
+\begin{itemize}
+ \item $v_d$ el vector de {\it document}
+ \item $v_q$ el vector de {\it query}
+ \item $||v||$ es la magnitud del vector $v$
+\end{itemize}
+
+\section*{Sobre la implementaci\'on}
+
 
 \end{document}
