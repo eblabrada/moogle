@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage[total={18cm,21cm},top=2cm, left=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath, amssymb, amsfonts, cancel}
+\usepackage{url, hyperref}
+
+%poner codigo fuente en latex
+\usepackage{color}
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+
+\usepackage{listings}
+\lstset{ frame=Ltb,
+	framerule=0pt,
+	aboveskip=0.5cm,
+	framextopmargin=2pt,
+	framexbottommargin=2pt,
+	framexleftmargin=0.4cm,
+	framesep=0pt,
+	rulesep=.4pt,
+	backgroundcolor=\color{white},
+	rulesepcolor=\color{black},
+	%
+	stringstyle=\ttfamily,
+	showstringspaces = false,
+	basicstyle=\small\ttfamily,
+	commentstyle=\color{gray45},
+	keywordstyle=\bfseries,
+	%
+	numbers=left,
+	numbersep=15pt,
+	numberstyle=\tiny,
+	numberfirstline = false,
+	breaklines=true,
+}
+
+% minimizar fragmentado de listados
+\lstnewenvironment{listing}[1][]
+{\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
+
+\lstdefinestyle{consola}
+{basicstyle=\scriptsize\bf\ttfamily,backgroundcolor=\color{gray75},}
+
+\lstdefinestyle{}{language=c++,}
+
+\begin{document}
+
+\title{}
+\author{Eduardo Brito Labrada}
+\date{}
+
+\maketitle
+
+\end{document}

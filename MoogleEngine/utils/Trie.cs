@@ -2,7 +2,7 @@ namespace MoogleEngine;
 
 public class Trie
 {
-  const int MaxLen = 100000, AlphaLen = 500;
+  const int MaxLen = 100000, AlphaLen = 250;
   private char[] alphabet = new char[MaxLen + 1];
   private List<int>[] child = new List<int>[MaxLen + 1];
   private int[] parent = new int[MaxLen + 1];
@@ -27,6 +27,7 @@ public class Trie
     int cur = 0;
     for (int i = 0; i < word.Length; i++)
     {
+      if (!Char.IsAscii(word[i])) continue;
       int alphaNum = (int)word[i];
       if (child[cur][alphaNum] == 0)
       {
@@ -43,6 +44,7 @@ public class Trie
     int cur = 0, lcp = 0;
     for (int i = 0; i < word.Length; i++)
     {
+      if (!Char.IsAscii(word[i])) continue;
       int alphaNum = (int)word[i];
       if (child[cur][alphaNum] == 0)
       {
@@ -62,6 +64,7 @@ public class Trie
     int cur = 0, lcp = 0;
     for (int i = 0; i < word.Length; i++)
     {
+      if (!Char.IsAscii(word[i])) continue;
       int alphaNum = (int)word[i];
       if (child[cur][alphaNum] == 0)
       {

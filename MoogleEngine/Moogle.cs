@@ -9,7 +9,11 @@ public static class Moogle
     var watch = System.Diagnostics.Stopwatch.StartNew();
 
     var res = SearchEngine.FindItems(query);
-
+    for (int i = 0; i < SearchEngine.allDocuments.numberOfDocuments; i++)
+    {
+      Console.WriteLine(SearchEngine.allDocuments.documentTitle[i]);
+      Console.WriteLine(SearchEngine.allDocuments.documentTrie[i].PrefixRelevance(query));
+    }
     if (alsoSuggestions == true)
     {
       Console.WriteLine("\nQuerying also for suggestions...\n");
