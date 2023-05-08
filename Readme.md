@@ -89,6 +89,4 @@ Están implementados y se pueden usar sin problemas de ningún tipo los siguient
  
 ## Otras funcionalidades
 
-Para hacer las sugerencias de búsqueda utilizo `Levenshtein distance` calculando la mínima distancia de cada palabra de la `query` a las palabras en el vocabulario (el vocabulario contiene todas las palabras que aparecen en los documentos).
-
-Además de hacer sugerencias para la búsqueda también busca los resultados para esta sugerencia, pero las devuelve con un menor `score`.
+Para hacer las sugerencias de búsqueda utilizo `Levenshtein distance` calculando la mínima distancia de cada palabra de la `query` a las palabras en el vocabulario (el vocabulario contiene todas las palabras que aparecen en los documentos). Además de hacer sugerencias para la búsqueda también busca los resultados para esta sugerencia, pero las devuelve con un menor `score`.
