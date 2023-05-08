@@ -355,27 +355,26 @@ public class TFIDFAnalyzer
 
     double res = num / den;
 
-    Dictionary<string, bool> marked = new Dictionary<string, bool>();
-    foreach (var x in forb)
-    {
-      marked[x] = true;
-    }
+    // Dictionary<string, bool> marked = new Dictionary<string, bool>();
+    // foreach (var x in forb)
+    // {
+    //   marked[x] = true;
+    // }
 
-    double trieRes = 0.0;
-    foreach (var word in queryVec.Keys)
-    {
-      if (marked.ContainsKey(word)) continue;
+    // double trieRes = 0.0;
+    // foreach (var word in queryVec.Keys)
+    // {
+    //   if (marked.ContainsKey(word)) continue;
 
-      trieRes += documentTrie[index].PrefixRelevance(word);
-    }
+    //   trieRes += documentTrie[index].PrefixRelevance(word);
+    // }
 
-    res += Math.Min(0.5, trieRes);
+    // res += Math.Min(0.5, trieRes);
 
     res *= OperatorIn(need, index);
     res *= OperatorNotIn(forb, index);
     res *= OperatorMore(more, index);
     res *= OperatorNear(near, index);
-
 
     return res;
   }
