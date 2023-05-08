@@ -42,7 +42,7 @@ Siendo:
 
 ## Interfaz gráfica
 
-Lamentablemente la interfaz sigue siendo bastante pobre. Solo tuve tiempo para modificar ciertas cosas en la interfaz. 
+Lamentablemente la interfaz sigue siendo bastante pobre. Solo tuve tiempo para modificar pocas cosas en la interfaz. 
 
 > Nota: La verdad es que estoy esperando encontrar un "socio" en la... ehem... (ya saben 🙃) que me ayude con esta parte.
 
@@ -60,7 +60,7 @@ Lo primero que tendrás que hacer para poder trabajar en este proyecto es instal
 make dev
 ```
 
-Luego abrir tu navegador y abrir: [Moogle!](http://localhost:5000)
+Luego abrir en tu navegador: [Moogle!](http://localhost:5000), luego escriba su búsqueda en la barra de búsqueda y haga click en el botón *Buscar*
 
 Si estás en Windows:
  1. ~~Instala Linux~~
@@ -89,4 +89,4 @@ Están implementados y se pueden usar sin problemas de ningún tipo los siguient
  
 ## Otras funcionalidades
 
-Para hacer las sugerencias de búsqueda utilizo `Levenshtein distance` calculando la mínima distancia de cada palabra de la `query` a las palabras en el vocabulario (el vocabulario contiene todas las palabras que aparecen en los documentos). Además de hacer sugerencias para la búsqueda también busca los resultados para esta sugerencia, pero las devuelve con un menor `score`.
+Se le harán determinadas sugerencias de acuerdo con su búsqueda. Además de hacer sugerencias para la búsqueda también busca los resultados para esta sugerencia, pero las devuelve con un menor `score`.
