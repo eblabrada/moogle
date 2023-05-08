@@ -10,25 +10,28 @@ public static class SearchEngine
     string[] text = item.Snippet.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
     string[] queryText = query.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
 
-    Queue<int> window = new Queue<int>();
+    Queue<(int, double)> window = new Queue<(int, double)>();
     int r = -1, snippetPos = 0, maxCnt = -1, curCnt = 0;
+    double minDist = -1, curDist = 0;
     for (int l = 0; l < text.Length; l++)
     {
       while (r + 1 < text.Length && r - l < len)
       {
         r++;
 
-        int f = 0;
+        int f = 0; double g = 0;
         for (int i = 0; i < queryText.Length; i++)
         {
           if (Utils.AreSimilar(queryText[i], text[r]))
           {
             f += 1;
+            g += Utils.Distance(queryText[i], text[r]);
           }
         }
 
         curCnt += f;
-        window.Enqueue(f);
+        curDist += g;
+        window.Enqueue((f, g));
       }
 
       if (maxCnt < curCnt)
@@ -36,10 +39,19 @@ public static class SearchEngine
         maxCnt = curCnt;
         snippetPos = l;
       }
+      else if (maxCnt == curCnt && curCnt != 0)
+      {
+        if (minDist == -1 || minDist > curDist / curCnt)
+        {
+          minDist = curDist / curCnt;
+          snippetPos = l;
+        }
+      }
 
       if (window.Count() > 0)
       {
-        curCnt -= window.Peek();
+        curCnt -= window.Peek().Item1;
+        curDist -= window.Peek().Item2;
         window.Dequeue();
       }
     }
