@@ -103,13 +103,6 @@ public static class SearchEngine
     {
       double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more, near);
       
-      double percent = 0;
-      foreach (var word in QTF.Keys) {
-        percent += allDocuments.documentTrie[i].PrefixRelevance(word);
-      }
-      
-      similarity += Math.Max(0.5, percent);
-      
       if (similarity == 0) continue;
 
       if (flag == false)
