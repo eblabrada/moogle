@@ -50,7 +50,7 @@ Por ahora, mientras mi búsqueda de ese "socio" no ha dado resultado; solo he ar
 
 ## Sobre el contenido a buscar
 
-La idea original del proyecto es buscar en un conjunto de archivos de texto (con extensión `.txt`) que estén en la carpeta `Content`.
+La idea original del proyecto es buscar en un conjunto de archivos de texto (con extensión `.txt`) que estén en la carpeta `Content`. Estos documentos deben estar escritos en formato UTF-8 y deben estar **preferentemente** en inglés.
 
 ## Ejecutando el proyecto
 

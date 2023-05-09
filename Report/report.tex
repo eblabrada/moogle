@@ -181,4 +181,33 @@ similares si su distancia de edici\'on es a lo m\'as $1$.
 	\item {\tt double Norm(Dictionary<string, double> vec)}: devuelve la norma de un vector.
 \end{itemize}
 
+\subsection*{\tt TFIDFAnalyzer.cs}
+
+Esta es la clase m\'as importante. En ella calculo el TF, el IDF de todas las palabras. 
+Adem\'as de la relevancia de una palabra en un documento determinado.
+
+\begin{itemize}
+	\item {\tt TFIDFAnalyzer(string path)}: dado un {\tt path} el constructor calcula el TF 
+	de cada palabra en cada documento, el IDF de todas las palabras, la relevancia de cada 
+	palabra en cada documento. Adem\'as, aqu\'i se guarda la informaci\'on calculada en los 
+	{\tt .json} que aparecen en la carpeta {\tt Database}, o se toma la informaci\'on guardada 
+	si ya esta calculada, de esta forma se evitan hacer los c\'alculos dos veces.
+	\item {\tt bool CanGet(string database = "../Database")}: devuelve {\tt true} si la cantidad
+de archivos que hay guardados en la carpeta {\tt Database} es la necesaria para tener {\bf toda} 
+la informaci\'on de {\bf todos} los documentos en {\tt Content}. Esto significa que si se modifica/elimina/a\~nade 
+al\'gun documento no va a devolver {\tt true}, o si no est\'an los {.json} necesarios
+para recuperar la informaci\'on tampoco devolver\'a {\tt true}.
+	\item {\tt void SaveInfo(string database = "../Database")}: se encarga de guardar toda la informaci\'on en los {\tt .json} dentro de la carpeta {\tt Database}.
+	\item {\tt void GetInfo(string database = "../Database")}: se encarga de obtener toda la informaci\'on guardada en los {\tt .json} que aparecen en la carpeta {\tt Database}.
+	\item {\tt void DeleteInfo(string database = "../Database")}: se encarga de eliminar los {\tt .json} que aparecen en la carpeta {\tt Database}.
+	\item {\tt void ProcessDocuments(List<string> doc, int index)}: es un m\'etodo auxiliar que dado el documento como una lista de palabras devuelve calcula el TF de cada una de esas
+palabras dentro del documento dado. {\tt index} es el indice de este documento.
+	\item {\tt string Suggestion(string query)}: dada una {\it query} devuelve una sugerencia de b\'usqueda para esta {\it query}. Esta sugerencia es calculada 
+	usando el {\tt EditDistance}, por cada palabra de la {\it query} busca la palabra dentro del vocabulario que tenga menor distancia de edici\'on con ella.
+	\item {\tt double OperatorIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt \^{}} devuelve $1.0$ si todas las palabras en {\tt words} 
+	aparecen en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
+	\item {\tt double OperatorNotIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt !} devuelve $1.0$ si ninguna de las palabras en {\tt words} 
+	aparece en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
+\end{itemize}
+
 \end{document}
