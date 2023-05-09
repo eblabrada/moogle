@@ -208,6 +208,8 @@ palabras dentro del documento dado. {\tt index} es el indice de este documento.
 	aparecen en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
 	\item {\tt double OperatorNotIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt !} devuelve $1.0$ si ninguna de las palabras en {\tt words} 
 	aparece en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
+	\item {\tt double OperatorMore((string, int)[] words, int index)}: dado las palabras que contienen {\tt *} y la cantidad de veces que aparece el {\tt *} delante, devuelve $\prod more * \ln(freq_{words})$ donde $more$ es la cantidad de veces que {\tt *} aparece delante de la palabra y $freq_{word}$ es la cantidad de veces que $word$ aparece en el documento con \'indice {\tt index}.
+	\item {\tt double OperatorNear((string, string)[] words, int index)}: por cada par de palabras en {\tt words} 
 \end{itemize}
 
 \end{document}
