@@ -88,7 +88,7 @@ public static class Utils
     string res = "";
     for (int i = 0; i < word.Length; i++)
     {
-      if (Char.IsAscii(word[i]) && Char.IsLetterOrDigit(word[i]))
+      if (Char.IsLetterOrDigit(word[i]))
       {
         res += word[i];
       }

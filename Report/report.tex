@@ -67,7 +67,7 @@
 \begin{document}
 
 \title{\bf \LARGE Moogle!}
-\author{Eduardo Brito Labrada}
+\author{Facultad de Matem\'atica y Computaci\'on \\ Universidad de La Habana \\ \\ Eduardo Brito Labrada}
 \date{\today}
 
 \maketitle
@@ -153,15 +153,32 @@ Esta clase est\'a principalmente para m\'etodos que son necesarios en varias cla
 proyecto.
 
 \begin{itemize}
-	\item {\tt int EditDistance(string a, string b)}:  es el menor n\'umero de operaciones de edici\'on
-que se deben hacer para igualar ambas cadenas (las operaciones son insertar un caracter, eliminar un caracter, cambiar un caracter). 
+	\item {\tt int EditDistance(string a, string b)}:  devuelve el menor n\'umero de operaciones de edici\'on
+que se deben hacer para igualar ambas cadenas (las operaciones son insertar un caracter, eliminar un caracter, 
+cambiar un caracter por otro). Para que esto funcione uso un algoritmo de Programaci\'on Din\'amica con una 
+optimizaci\'on en memoria para que en lugar de tomar $O(n \times m)$ en memoria tome $O(2 \times min(n, m))$, 
+a pesar de esto la complejidad temporal sigue siendo la misma $O(n \times m)$, donde $n$ y $m$ son las longitudes de las cadenas.
 	\item {\tt int LongestCommonPrefix(string a, string b)}: esta clase recibe dos cadenas y
-devuelve el prefijo com\'un m\'as largo de dichas cadenas.
-	\item {\tt double Distance(string a, string b)}: devuelve la similitud de dos cadenas
-esta funci\'on retorna utilizando el {\tt EditDistance} (en lo adelante $ED$) y el 
-{\tt LongestCommonPrefix} (en lo adelante $LCP$) de dos cadenas, la distancia que existe 
-entre ellas. En este m\'etodo utilizo $\frac{ED}{LCP}$ bas\'andome en que {\tt picta} y {\tt picture}
+devuelve el prefijo com\'un m\'as largo de dichas cadenas. Complejidad temporal $O(min(n, m))$ donde $n$ y $m$ 
+son las longitudes de las cadenas.
+	\item {\tt double Distance(string a, string b)}: devuelve la similitud de dos cadenas usando el {\tt Edit Distance}, pero
+esto no siempre funciona como se espera, por ejemplo {\tt ebelabrada} est\'a tan cerca a {\tt eblabrada} como a {\tt zbelabrada}, 
+sin embargo deber\'ia devolver a {\tt eblabrada} que tiene un mayor prefijo com\'un. Para arreglar esto utilizo 
+$\frac{ed}{lcp}$ donde $ed$ es el resultado de {\tt EditDistance} y $lcp$ es el resultado de {\tt LongestCommonPrefix}.
+	\item {\tt bool AreSimilar(string a, string b)}: devuelve {\tt true} si dos palabras son similares, considero dos palabras
+similares si su distancia de edici\'on es a lo m\'as $1$.
+	\item {\tt string Capitalize(string word)}: devuelve a {\tt word} capitalizado.
+	\item {\tt string Tokenizer(string word)}: devuelve a {\tt word} eliminando todos los caracteres que no sean letras o digitos.
+	\item {\tt List<string> NormalizeText(string text)}: dado un texto devuelve una lista de todas las palabras dentro del texto, 
+	adem\'as las palabras en esta lista ser\'an devueltas "tokenizadas".
+	\item {\tt string[] GetNeed(string[] words)}: devuelve un {\tt Array} de las palabras que tienen a {\tt \^{}} delante.
+	\item {\tt string[] GetForbidden(string[] words)}: devuelve un {\tt Array} de las palabras que tienen a {\tt !} delante.
+	\item {\tt (string, int)[] GetMore(string[] words)}: devuelve un {\tt Array} de tuplas, en el primer ``item'' de la tupla 
+	est\'a la palabra que contiene {\tt *} delante y en el segundo ``item'' de la tupla contiene la cantidad de {\tt *} delante 
+	que contiene la palabra.
+	\item {\tt (string, string)[] GetNear(string[] words)}: devuelve un {\tt Array} de tuplas que contiene las palabras que est\'an relacionadas por 
+	{\tt \~{}}
+	\item {\tt double Norm(Dictionary<string, double> vec)}: devuelve la norma de un vector.
 \end{itemize}
-
 
 \end{document}
