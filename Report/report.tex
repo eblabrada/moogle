@@ -213,4 +213,17 @@ palabras dentro del documento dado. {\tt index} es el indice de este documento.
 	\item {\tt double ComputeRelevance(Dictionary<string,double> queryVec, int index, string[] need, string[] forb, (string, int)[] more, (string, string)[] near)} este m\'etodo recibe el vector de la {\it query}, el \'indice del documento en el que se va a analizar la query, las palabras que contienen {\tt \^{}}, {\tt !}, {\tt *} delante, y las que est\'an asociadas por {\tt \~{}}. Devuelve la relevancia de la query dentro del documento, utilizando la f\'ormula mencionada en {\bf Motor de b\'usqueda}, ese valor multiplicado por el resultado de los \'ultimos cuatro m\'etodos explicados anteriormente.
 \end{itemize}
 
+\subsection*{\tt SearchEngine.cs}
+
+\begin{itemize}
+	\item {\tt SearchItem CalculateSnippet(SearchItem item, string query, int len = 100)}: este m\'etodo calcula el mejor snippet para la {\it query} dada, para hacer esto utilizo un algoritmo de {\it Sliding Window} que busca cual "ventana" de texto tiene m\'as palabras "similares" a las palabras en la {\it query}.
+	\item {\tt (List<SearchItem>, string) FindItems(string query, double factor = 1.0)}: devuelve una tupla que contiene una lista de {\tt SearchItem} que contiene los resultados de la b\'usqueda y la sugerencia para esta {\it query}. Adem\'as, recibe un valor {\tt factor} que se utiliza para decir que tan relevante son estos resultados para la b\'usqueda. Esto se utiliza principalmente porque adem\'as de buscar los resultados de la {\it query} hecha por el usuario, esto tambi\'en devuelve los resultados para la sugerencia que se le da al usuario pero este {\it score} debe ser devuelto con menor valor que el {\it score} de la query del usuario por lo tanto, lo divido entre {\tt factor}. Devuelve los resultados ordenados de mayor a menor por el {\it score}.
+\end{itemize}
+
+\subsection*{\tt Moogle.cs}
+
+\begin{itemize}
+	\item {\tt SearchResult Query(string query, bool alsoSuggestions = true)}: devuelve los resultados de la b\'usqueda, adem\'as {\tt alsoSuggestions = true} significa que devolver\'a los resultados tambi\'en para la sugerencia, cuando el valor de {\tt alsoSuggestions = false} solo buscar\'a para la {\it query} hecha por el usuario.
+\end{itemize}
+
 \end{document}
