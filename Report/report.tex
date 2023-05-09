@@ -210,6 +210,7 @@ palabras dentro del documento dado. {\tt index} es el indice de este documento.
 	aparece en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
 	\item {\tt double OperatorMore((string, int)[] words, int index)}: dado las palabras que contienen {\tt *} y la cantidad de veces que aparece el {\tt *} delante, devuelve $\prod more * \ln(freq_{words})$ donde $more$ es la cantidad de veces que {\tt *} aparece delante de la palabra y $freq_{word}$ es la cantidad de veces que $word$ aparece en el documento con \'indice {\tt index}.
 	\item {\tt double OperatorNear((string, string)[] words, int index)}: por cada par de palabras en {\tt words} calcula la m\'inima distancia entre las apariciones de estas palabras en el documento con \'indice {\tt index}, esa m\'inima distancia (llamemosle $md$), la utilizo para calcular lo que le aporta a la respuesta, $\prod \frac{2}{\ln(md) + 1}$.
+	\item {\tt double ComputeRelevance(Dictionary<string,double> queryVec, int index, string[] need, string[] forb, (string, int)[] more, (string, string)[] near)} este m\'etodo recibe el vector de la {\it query}, el \'indice del documento en el que se va a analizar la query, las palabras que contienen {\tt \^{}}, {\tt !}, {\tt *} delante, y las que est\'an asociadas por {\tt \~{}}. Devuelve la relevancia de la query dentro de el documento, utilizando la f\'ormula mencionada en {\bf Motor de b\'usqueda}.
 \end{itemize}
 
 \end{document}
