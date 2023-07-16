@@ -1,72 +1,50 @@
-\documentclass{report}
-\usepackage[total={18cm,21cm},top=2cm, left=2cm]{geometry}
-\usepackage{xcolor}
-\usepackage{amsmath, amssymb, amsfonts}
-\usepackage{url, hyperref}
+\documentclass[a4paper, 12pt]{report}
+\usepackage[left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
 
-%poner codigo fuente en latex
+\usepackage{xcolor}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, amssymb}
+\usepackage{url, hyperref}
+\usepackage{graphicx}
+% Usar plantilla en español.
+\usepackage[spanish]{babel}
+
+% Agregar citas bibliográficas
+\usepackage{cite}
+
+% Poner código fuente en latex
+\usepackage{listings}
 \usepackage{color}
+
 \definecolor{gray97}{gray}{.97}
 \definecolor{gray75}{gray}{.75}
 \definecolor{gray45}{gray}{.45}
-
-\usepackage{listings}
-\lstset{ frame=Ltb,
+\lstset{
+	frame=Ltb,
 	framerule=0pt,
 	aboveskip=0.5cm,
-	framextopmargin=2pt,
-	framexbottommargin=2pt,
+	framextopmargin=3pt,
+	framexbottommargin=3pt,
 	framexleftmargin=0.4cm,
 	framesep=0pt,
 	rulesep=.4pt,
-	backgroundcolor=\color{white},
+	backgroundcolor=\color{gray97},
 	rulesepcolor=\color{black},
-	%
-	stringstyle=\ttfamily,
-	showstringspaces = false,
-	basicstyle=\small\ttfamily,
-	commentstyle=\color{gray45},
-	keywordstyle=\bfseries,
-	%
-	numbers=none,
-	numbersep=15pt,
-	numberstyle=\tiny,
-	numberfirstline = false,
-	breaklines=true,
-}
-
-\usepackage{listings}
-\lstset{ frame=Ltb,
-	framerule=0pt,
-	aboveskip=0.5cm,
-	framextopmargin=2pt,
-	framexbottommargin=2pt,
-	framexleftmargin=0.4cm,
-	framesep=0pt,
-	rulesep=.4pt,
-	backgroundcolor=\color{white},
-	rulesepcolor=\color{black},
-	%
-	stringstyle=\ttfamily,
-	showstringspaces = false,
-	basicstyle=\small\ttfamily,
-	commentstyle=\color{gray45},
-	keywordstyle=\bfseries,
-	%
-}
-
+	% Resalta los espacios en blanco en las cadenas
+	showstringspaces = true, columns=fullflexible, basicstyle=\ttfamily,
+	stringstyle=\color{orange}, commentstyle=\color{gray45},
+	keywordstyle=\bfseries\color{green!40!black},
+	% 
+	numbers=left, numbersep=15pt, numberstyle=\tiny, numberfirstline = false,
+	breaklines=true, }
 % minimizar fragmentado de listados
 \lstnewenvironment{listing}[1][]
 {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
 
-\lstdefinestyle{consola}
-{basicstyle=\scriptsize\bf\ttfamily}
-
-\lstdefinestyle{}{language=c++,}
-
 \begin{document}
 
-\title{\bf \LARGE Moogle!}
+\title{
+  \includegraphics[height=5cm]{images/matcom.jpg}  \\
+	{\bf \LARGE Moogle!}}
 \author{Facultad de Matem\'atica y Computaci\'on \\ Universidad de La Habana \\ \\ Eduardo Brito Labrada}
 \date{\today}
 
@@ -74,8 +52,12 @@
 
 \section*{Una breve introducci\'on}
 
-Moogle! es una aplicación {\it totalmente original} cuyo propósito es buscar inteligentemente un texto en un conjunto de documentos. Es una aplicación web, desarrollada con tecnología {\tt \color{gray45}.NET Core 6.0}, específicamente usando Blazor como {\it framework} web para la interfaz gráfica, y en el lenguaje {\tt \color{gray45} C\#}.
-La aplicación está dividida en dos componentes fundamentales:
+Moogle! es una aplicación {\it totalmente original} cuyo propósito es buscar
+inteligentemente un texto en un conjunto de documentos. Es una aplicación web,
+desarrollada con tecnología {\tt \color{gray45}.NET Core 6.0}, específicamente
+usando Blazor como {\it framework} web para la interfaz gráfica, y en el
+lenguaje {\tt \color{gray45} C\#}. La aplicación está dividida en dos
+componentes fundamentales:
 
 \begin{itemize}
 	\item {\tt \color{gray45} MoogleServer} es un servidor web que renderiza la interfaz gráfica y sirve los resultados.
@@ -84,130 +66,143 @@ La aplicación está dividida en dos componentes fundamentales:
 
 \subsection*{?`Para qu\'e sirve?}
 
-La idea original del proyecto es buscar en un conjunto de archivos de texto (con extensión {\tt \color{gray45} .txt}) que estén en la carpeta {\tt \color{gray45}Content}.
+La idea original del proyecto es buscar en un conjunto de archivos de texto
+(con extensión {\tt \color{gray45} .txt}) que estén en la carpeta {\tt
+		\color{gray45}Content}.
 
 \subsection*{?`C\'omo usarlo?}
 
-Primeramente, se aconseja a quien use esta aplicaci\'on tener instalado \href{https://es.wikipedia.org/wiki/Linux}{Linux}, ya que no se garantiza la misma eficiencia si esta en un dispositivo que use Windows.
-En caso de tener instalado Windows, puede optar por \href{https://learn.microsoft.com/es-es/windows/wsl/install}{instalar Windows Subsystem for Linux (WSL)} que a\~nade
-funcionalidades de Linux en Windows.
+Primeramente, se aconseja a quien use esta aplicaci\'on tener instalado
+\href{https://es.wikipedia.org/wiki/Linux}{Linux}, ya que no se garantiza la
+misma eficiencia si esta en un dispositivo que use Windows. En caso de tener
+instalado Windows, puede optar por
+\href{https://learn.microsoft.com/es-es/windows/wsl/install}{instalar Windows
+	Subsystem for Linux (WSL)} que a\~nade funcionalidades de Linux en Windows.
 
 \subsubsection*{Instrucciones}
 
-Lo primero que el usuario debe hacer para poder usar este proyecto es \href{https://learn.microsoft.com/es-es/dotnet/core/install/}{instalar {\tt \color{gray45}.NET Core 6.0}}.
-Luego, debe pararse en la carpeta del proyecto y dependiendo de tu sistema operativo hacer lo siguiente:
+Lo primero que el usuario debe hacer para poder usar este proyecto es
+\href{https://learn.microsoft.com/es-es/dotnet/core/install/}{instalar {\tt
+			\color{gray45}.NET Core 6.0}}. Luego, debe pararse en la carpeta del proyecto y
+dependiendo de su sistema operativo hacer lo siguiente:
 
 \begin{itemize}
-	\item {\bf Linux:} Debe tener instalado {\tt \color{gray45} make}. Si no lo tiene instalado
-puede instalarlo ejecutando el siguiente comando en el terminal {\tt \color{gray45}sudo apt update \&\& sudo apt install make}. Luego deber\'a ejecutar {\tt \color{gray45}make dev}
-	
+	\item {\bf Linux o WSL:} Debe tener instalado {\tt \color{gray45} make}. Si no lo tiene instalado
+	      puede instalarlo ejecutando el siguiente comando en el terminal {\tt \color{gray45}sudo apt update \&\& sudo apt install make}. Luego deber\'a ejecutar {\tt \color{gray45}make dev}
+
 	\item {\bf Windows:} Debería poder ejecutar este proyecto usando {\tt \color{gray45}dotnet watch run --project MoogleServer}
 \end{itemize}
 
-Despu\'es de hacer lo anterior abra en su navegador \href{http://localhost:5000}{http://localhost:5000} y podr\'as usar {\bf Moogle!} introduciendo tu b\'usqueda en la ``entrada'' y luego presionando el bot\'on ``Buscar''.
+Despu\'es de hacer lo anterior abra en su navegador
+\href{http://localhost:5000}{http://localhost:5000} y podr\'as usar {\bf
+		Moogle!} introduciendo su b\'usqueda en la ``entrada'' y luego presionando el
+bot\'on ``Buscar''.
 
 \section*{Motor de b\'usqueda}
 
-El motor de búsqueda usa un modelo vectorial que computa para una {\it query} dada 
-qué tan relevante es un documento determinado. Este modelo vectorial usa {\it Term Frequency and Inverse Document Frequency (TF-IDF)} con 
-{\it Cosine Similarity} para computar la relevancia. Para computar el vector {\it TF-IDF} se hace uso de la fórmula:
+El motor de búsqueda usa un modelo vectorial que computa para una {\it query}
+dada qué tan relevante es un documento determinado. Este modelo vectorial usa
+	{\it Term Frequency and Inverse Document Frequency (TF-IDF)} con {\it Cosine
+		Similarity} para computar la relevancia de una {\it query}. Para computar el vector {\it TF-IDF}
+se hace uso de la fórmula:
 
 \begin{equation}
-	TFIDF = (\frac{tf}{tw}) \times \ln(\frac{td}{dt})	
+	TFIDF = (\frac{tf}{tw}) \times \ln(\frac{td}{dt})
 \end{equation}
 
 En esta fórmula tenemos que:
 \begin{itemize}
- \item $tf$ es la frecuencia del término en el documento actual.
- \item $tw$ es la cantidad de palabras totales en el documento actual.
- \item $td$ es la cantidad total de documentos a analizar.
- \item $dt$ es la cantidad de documentos que contienen el término.
+	\item $tf$ es la frecuencia del término en el documento actual.
+	\item $tw$ es la cantidad de palabras totales en el documento actual.
+	\item $td$ es la cantidad total de documentos a analizar.
+	\item $dt$ es la cantidad de documentos que contienen el término.
 \end{itemize}
 
-{\bf \color{red} Nota importante}: dado que $\frac{td}{dt}$ puede causar problemas por la 
-división entre $0$ decidí que si $dt = 0$ luego $TFIDF = 0$, tiene sentido hacer esto ya 
+{\bf \color{red} Nota importante}: dado que $\frac{td}{dt}$ puede causar problemas por la
+división entre $0$ decidí que si $dt = 0$ luego $TFIDF = 0$, tiene sentido hacer esto ya
 que si $dt = 0$ el término no aparece en ningún documento.\\
 
-Después de hacer lo anterior necesitamos calcular la ``similitud'' entre el vector
-{\it document} y el vector {\it query} para lo cual se hace uso de
-{\it Cosine Similarity}.  La idea es intentar estimar el ``ángulo'' comprendido entre el vector
-{\it query} y el vector {\it document}: mientras menor sea este ángulo, mayor 
-``similitud'' tendrán estos vectores. Para lo anterior se hace uso de la f\'ormula:
+Después de hacer lo anterior necesitamos calcular la ``similitud'' entre el
+vector {\it document} y el vector {\it query} para lo cual se hace uso de {\it
+		Cosine Similarity}. La idea es intentar estimar el ``ángulo'' comprendido entre
+el vector {\it query} y el vector {\it document}: mientras menor sea este
+ángulo, mayor ``similitud'' tendrán estos vectores. Para lo anterior se hace
+uso de la f\'ormula:
 
-\begin{equation}	
+\begin{equation}
 	\cos \alpha = \frac{v_d \cdot v_q}{||v_d|| ~ ||v_q||}
 \end{equation}
 
 Siendo:
 
 \begin{itemize}
- \item $v_d$ el vector de {\it document}
- \item $v_q$ el vector de {\it query}
- \item $||v||$ es la magnitud del vector $v$
+	\item $v_d$ el vector de {\it document}
+	\item $v_q$ el vector de {\it query}
+	\item $||v||$ es la magnitud del vector $v$
 \end{itemize}
 
 \section*{Sobre la implementaci\'on}
 
 \subsection*{\tt Utils.cs}
 
-Esta clase tiene los m\'etodos necesarios en el proyecto.
+Esta clase tiene los m\'etodos auxiliares necesarios en el proyecto.
 
 \begin{itemize}
 	\item {\tt int EditDistance(string a, string b)}:  devuelve el menor n\'umero de operaciones de edici\'on
-que se deben hacer para igualar ambas cadenas (las operaciones son insertar un caracter, eliminar un caracter, 
-cambiar un caracter por otro). Para que esto funcione se hace uso de un algoritmo de Programaci\'on Din\'amica con una 
-optimizaci\'on en memoria para que en lugar de tomar $O(n \times m)$ en memoria tome $O(2 \times min(n, m))$, 
-a pesar de esto la complejidad temporal sigue siendo la misma $O(n \times m)$, donde $n$ y $m$ son las longitudes de las cadenas.
+	      que se deben hacer para igualar ambas cadenas (las operaciones son insertar un caracter, eliminar un caracter,
+	      cambiar un caracter por otro). Para que esto funcione se hace uso de un algoritmo de Programaci\'on Din\'amica con una
+	      optimizaci\'on en memoria para que en lugar de tomar $O(n \times m)$ en memoria tome $O(2 \times min(n, m))$,
+	      a pesar de esto la complejidad temporal sigue siendo la misma $O(n \times m)$, donde $n$ y $m$ son las longitudes de las cadenas.
 	\item {\tt int LongestCommonPrefix(string a, string b)}: esta clase recibe dos cadenas y
-devuelve el prefijo com\'un m\'as largo de dichas cadenas. La complejidad es $O(min(n, m))$ donde $n$ y $m$ 
-son las longitudes de las cadenas.
+	      devuelve el prefijo com\'un m\'as largo de dichas cadenas. La complejidad es $O(min(n, m))$ donde $n$ y $m$
+	      son las longitudes de las cadenas.
 	\item {\tt double Distance(string a, string b)}: devuelve la similitud de dos cadenas usando el {\tt Edit Distance}, pero
-esto no siempre funciona como se espera, por ejemplo {\tt ebelabrada} est\'a tan cerca a {\tt eblabrada} como a {\tt zbelabrada}, 
-sin embargo deber\'ia devolver a {\tt eblabrada} que tiene un mayor prefijo com\'un. Para arreglar esto utilizo 
-$\frac{ed}{lcp}$ donde $ed$ es el resultado de {\tt EditDistance} y $lcp$ es el resultado de {\tt LongestCommonPrefix}.
+	      esto no siempre funciona como se espera, por ejemplo {\tt ebelabrada} est\'a tan cerca a {\tt eblabrada} como a {\tt zbelabrada},
+	      sin embargo deber\'ia devolver a {\tt eblabrada} que tiene un mayor prefijo com\'un. Para arreglar esto utilizo
+	      $\frac{ed}{lcp}$ donde $ed$ es el resultado de {\tt EditDistance} y $lcp$ es el resultado de {\tt LongestCommonPrefix}.
 	\item {\tt bool AreSimilar(string a, string b)}: devuelve {\tt true} si dos palabras son similares, considero dos palabras
-similares si su distancia de edici\'on es a lo m\'as $1$.
+	      similares si su distancia de edici\'on es a lo m\'as $1$.
 	\item {\tt string Capitalize(string word)}: devuelve a {\tt word} capitalizado.
 	\item {\tt string Tokenizer(string word)}: devuelve a {\tt word} eliminando todos los caracteres que no sean letras o digitos.
-	\item {\tt List<string> NormalizeText(string text)}: dado un texto devuelve una lista de todas las palabras dentro del texto, 
-	adem\'as las palabras en esta lista ser\'an devueltas "tokenizadas".
+	\item {\tt List<string> NormalizeText(string text)}: dado un texto devuelve una lista de todas las palabras dentro del texto,
+	      adem\'as las palabras en esta lista ser\'an devueltas ``tokenizadas".
 	\item {\tt string[] GetNeed(string[] words)}: devuelve un {\tt Array} de las palabras que tienen a {\tt \^{}} delante.
 	\item {\tt string[] GetForbidden(string[] words)}: devuelve un {\tt Array} de las palabras que tienen a {\tt !} delante.
-	\item {\tt (string, int)[] GetMore(string[] words)}: devuelve un {\tt Array} de tuplas, en el primer ``item'' de la tupla 
-	est\'a la palabra que contiene {\tt *} delante y en el segundo ``item'' de la tupla contiene la cantidad de {\tt *} delante 
-	que contiene la palabra.
-	\item {\tt (string, string)[] GetNear(string[] words)}: devuelve un {\tt Array} de tuplas que contiene las palabras que est\'an relacionadas por 
-	{\tt \~{}}
+	\item {\tt (string, int)[] GetMore(string[] words)}: devuelve un {\tt Array} de tuplas, en el primer ``item'' de la tupla
+	      est\'a la palabra que contiene {\tt *} delante y en el segundo ``item'' de la tupla contiene la cantidad de {\tt *} delante
+	      que contiene la palabra.
+	\item {\tt (string, string)[] GetNear(string[] words)}: devuelve un {\tt Array} de tuplas que contiene las palabras que est\'an relacionadas por
+	      {\tt \~{}}
 	\item {\tt double Norm(Dictionary<string, double> vec)}: devuelve la norma de un vector.
 \end{itemize}
 
 \subsection*{\tt TFIDFAnalyzer.cs}
 
-Esta es la clase m\'as importante. En ella calculo el TF, el IDF de todas las palabras. 
-Adem\'as de la relevancia de una palabra en un documento determinado.
+Esta es la clase m\'as importante. En ella se calcula el TF, el IDF de todas las
+palabras. Adem\'as de la relevancia de una palabra en un documento determinado.
 
 \begin{itemize}
-	\item {\tt TFIDFAnalyzer(string path)}: dado un {\tt path} el constructor calcula el TF 
-	de cada palabra en cada documento, el IDF de todas las palabras, la relevancia de cada 
-	palabra en cada documento. Adem\'as, aqu\'i se guarda la informaci\'on calculada en los 
-	{\tt .json} que aparecen en la carpeta {\tt Database}, o se toma la informaci\'on guardada 
-	si ya esta calculada, de esta forma se evitan hacer los c\'alculos dos veces.
+	\item {\tt TFIDFAnalyzer(string path)}: dado un {\tt path} el constructor calcula el TF
+	      de cada palabra en cada documento, el IDF de todas las palabras, la relevancia de cada
+	      palabra en cada documento. Adem\'as, aqu\'i se guarda la informaci\'on calculada en los
+		      {\tt .json} que aparecen en la carpeta {\tt Database}, o se toma la informaci\'on guardada
+	      si ya esta calculada, de esta forma se evitan hacer los c\'alculos dos veces.
 	\item {\tt bool CanGet(string database = "../Database")}: devuelve {\tt true} si la cantidad
-de archivos que hay guardados en la carpeta {\tt Database} es la necesaria para tener {\bf toda} 
-la informaci\'on de {\bf todos} los documentos en {\tt Content}. Esto significa que si se modifica/elimina/a\~nade 
-al\'gun documento no va a devolver {\tt true}, o si no est\'an los {.json} necesarios
-para recuperar la informaci\'on tampoco devolver\'a {\tt true}.
+	      de archivos que hay guardados en la carpeta {\tt Database} es la necesaria para tener {\bf toda}
+	      la informaci\'on de {\bf todos} los documentos en {\tt Content}. Esto significa que si se modifica/elimina/a\~nade
+	      al\'gun documento no va a devolver {\tt true}, o si no est\'an los {.json} necesarios
+	      para recuperar la informaci\'on tampoco devolver\'a {\tt true}.
 	\item {\tt void SaveInfo(string database = "../Database")}: se encarga de guardar toda la informaci\'on en los {\tt .json} dentro de la carpeta {\tt Database}.
 	\item {\tt void GetInfo(string database = "../Database")}: se encarga de obtener toda la informaci\'on guardada en los {\tt .json} que aparecen en la carpeta {\tt Database}.
 	\item {\tt void DeleteInfo(string database = "../Database")}: se encarga de eliminar los {\tt .json} que aparecen en la carpeta {\tt Database}.
 	\item {\tt void ProcessDocuments(List<string> doc, int index)}: es un m\'etodo auxiliar que dado el documento como una lista de palabras devuelve calcula el TF de cada una de esas
-palabras dentro del documento dado. {\tt index} es el indice de este documento.
-	\item {\tt string Suggestion(string query)}: dada una {\it query} devuelve una sugerencia de b\'usqueda para esta {\it query}. Esta sugerencia es calculada 
-	usando el {\tt EditDistance}, por cada palabra de la {\it query} busca la palabra dentro del vocabulario que tenga menor distancia de edici\'on con ella.
-	\item {\tt double OperatorIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt \^{}} devuelve $1.0$ si todas las palabras en {\tt words} 
-	aparecen en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
-	\item {\tt double OperatorNotIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt !} devuelve $1.0$ si ninguna de las palabras en {\tt words} 
-	aparece en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
+	      palabras dentro del documento dado. {\tt index} es el indice de este documento.
+	\item {\tt string Suggestion(string query)}: dada una {\it query} devuelve una sugerencia de b\'usqueda para esta {\it query}. Esta sugerencia es calculada
+	      usando el {\tt EditDistance}, por cada palabra de la {\it query} busca la palabra dentro del vocabulario que tenga menor distancia de edici\'on con ella.
+	\item {\tt double OperatorIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt \^{}} devuelve $1.0$ si todas las palabras en {\tt words}
+	      aparecen en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
+	\item {\tt double OperatorNotIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt !} devuelve $1.0$ si ninguna de las palabras en {\tt words}
+	      aparece en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
 	\item {\tt double OperatorMore((string, int)[] words, int index)}: dado las palabras que contienen {\tt *} y la cantidad de veces que aparece el {\tt *} delante, devuelve $\prod more * \ln(freq_{words})$ donde $more$ es la cantidad de veces que {\tt *} aparece delante de la palabra y $freq_{word}$ es la cantidad de veces que $word$ aparece en el documento con \'indice {\tt index}.
 	\item {\tt double OperatorNear((string, string)[] words, int index)}: por cada par de palabras en {\tt words} calcula la m\'inima distancia entre las apariciones de estas palabras en el documento con \'indice {\tt index}, esa m\'inima distancia (llamemosle $md$), la utilizo para calcular lo que le aporta a la respuesta, $\prod \frac{2}{\ln(md) + 1}$.
 	\item {\tt double ComputeRelevance(Dictionary<string,double> queryVec, int index, string[] need, string[] forb, (string, int)[] more, (string, string)[] near)} este m\'etodo recibe el vector de la {\it query}, el \'indice del documento en el que se va a analizar la query, las palabras que contienen {\tt \^{}}, {\tt !}, {\tt *} delante, y las que est\'an asociadas por {\tt \~{}}. Devuelve la relevancia de la query dentro del documento, utilizando la f\'ormula mencionada en {\bf Motor de b\'usqueda}, ese valor multiplicado por el resultado de los \'ultimos cuatro m\'etodos explicados anteriormente.
