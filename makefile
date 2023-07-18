@@ -8,7 +8,7 @@ help:
 	@echo " make build       - to build Moogle"
 	@echo " make dev         - to run Moogle"
 	@echo " make docs        - to build Moogle's documentation"
-	@echo " make clean       - to clean up the build process"
+	@echo " make latexclean  - to clean up the latex's build process"
 	@echo " make veryclean   - to clean up all documentation"
 	@echo " make help        - to show this information"
 	@echo ""
@@ -29,9 +29,9 @@ latexbuild:
 	@cp Report/report.pdf report.pdf
 	@cp Report/presentation.pdf presentation.pdf
 
-.PHONY: clean
+.PHONY: latexclean
 latexclean:
-	@cd Report && rm -f report.aux report.fls report.log report.out report.synctex.gz report.pdf
+	@cd Report && rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz report.pdf
 	@cd Report && rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk presentation.pdf
 	
 .PHONY: veryclean
