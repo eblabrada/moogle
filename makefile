@@ -32,7 +32,7 @@ latexbuild:
 .PHONY: clean
 latexclean:
 	@cd Report && rm -f report.aux report.fls report.log report.out report.synctex.gz report.pdf
-	@cd Report && rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.pdf
+	@cd Report && rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk presentation.pdf
 	
 .PHONY: veryclean
 veryclean: | latexclean
