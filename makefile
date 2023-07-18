@@ -24,6 +24,8 @@ dev:
 latexbuild: 
 	@cd Report
 	$(LATEXCMD) report.tex </dev/null
+	$(LATEXCMD) report.tex </dev/null
+	$(LATEXCMD) presentation.tex </dev/null
 	$(LATEXCMD) presentation.tex </dev/null
 	@cd ..
 	@cp Report/report.pdf report.pdf

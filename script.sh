@@ -1,11 +1,13 @@
 #!/bin/bash
 
 compileReport() {
-  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -output-directory Report/ Report/report.tex </dev/null
+  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Report/ Report/report.tex </dev/null
+  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Report/ Report/report.tex </dev/null
 }
 
 compilePresentation() {
-  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -output-directory Report/ Report/presentation.tex </dev/null
+  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Report/ Report/presentation.tex </dev/null
+  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Report/ Report/presentation.tex </dev/null
 }
 
 latexclean() {
