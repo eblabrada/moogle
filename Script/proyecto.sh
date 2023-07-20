@@ -76,7 +76,7 @@ elif [ $1 = clean ]
   then latexclean;
 elif [ $1 = veryclean ]
   then veryclean;
-elif [ $1 = docs]:
+elif [ $1 = docs ]
   then latexbuild;
 elif [ $1 = help ]
   then menu;
@@ -84,8 +84,6 @@ elif [ $1 = show_report ]
   then showReport;
 elif [ $1 = show_slides ]
   then showPresentation;
-elif [ $1 = docs ]
-  then latexbuild;
 else
   then:
     echo "Invalid command!"
