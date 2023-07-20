@@ -1,0 +1,11 @@
+# Ignore all LaTex build results
+
+*.aux
+*.log
+*.out
+*.fdb_latexmk
+*.fls
+*.gz
+*.nav
+*.snm
+*.toc
