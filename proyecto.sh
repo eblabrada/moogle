@@ -34,10 +34,18 @@ clean() {
   rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk
   cd ..
   cd MoogleServer
-  rm -r bin obj
+  
+  if [ -r  "bin" ]
+  then
+    rm -r bin obj
+  fi
+  
   cd ..
   cd MoogleEngine
-  rm -r bin obj
+  if [ -r  "bin" ]
+  then
+    rm -r bin obj
+  fi
   cd ..
 }
 
