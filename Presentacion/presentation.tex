@@ -29,23 +29,22 @@
 \definecolor{gray75}{gray}{.75}
 \definecolor{gray45}{gray}{.45}
 
-
 \title[Moogle!]{\LARGE Moogle!}
 \author{Eduardo Brito Labrada}
 \institute[Universidad de La Habana]
 {
-  Facultad de Matem\'atica y Computaci\'on
+  Facultad de Matem\'atica y Computacin
 }
 \date{\today}
 
 \begin{document}
 \begin{frame}
-\maketitle
+  \maketitle
 \end{frame}
 
-\section{Una breve introducci\'on}
+\section{Una breve introduccin}
 
-\begin{frame}{Una breve introducci\'on}
+\begin{frame}{Una breve introduccin}
   \begin{center}
     \includegraphics[width=10cm]{images/moogle.png}
   \end{center}
@@ -54,13 +53,13 @@
   inteligentemente un texto en un conjunto de documentos.
 \end{frame}
 
-\begin{frame}{Una breve introducci\'on}
+\begin{frame}{Una breve introduccin}
   Es una aplicación web, desarrollada con tecnología {\tt .NET Core 6.0}, específicamente
   usando Blazor como {\it framework} web para la interfaz gráfica, y en el
   lenguaje {\tt C\#}. \\
 \end{frame}
 
-\begin{frame}{Una breve introducci\'on}
+\begin{frame}{Una breve introduccin}
 
   La aplicación está dividida en dos componentes fundamentales:
 
@@ -70,18 +69,18 @@
   \end{itemize}
 \end{frame}
 
-\subsection{?`Para qu\'e sirve?}
+\subsection{¿Para qué sirve?}
 
-\begin{frame}{?`Para qu\'e sirve?}
+\begin{frame}{¿Para qué sirve?}
   La idea original del proyecto es buscar en un conjunto de archivos de texto
   (con extensión {\tt \color{gray45} .txt}) que estén en la carpeta {\tt
       \color{gray45}Content}.
 \end{frame}
 
-\subsection*{?`C\'omo usarlo?}
+\subsection*{¿Cmo usarlo?}
 
 \begin{frame}
-  Primeramente, se aconseja a quien use esta aplicaci\'on tener instalado
+  Primeramente, se aconseja a quien use esta aplicacin tener instalado
   \href{https://es.wikipedia.org/wiki/Linux}{Linux}, ya que no se garantiza la
   misma eficiencia si esta en un dispositivo que use Windows.
 \end{frame}
@@ -113,19 +112,18 @@
 \begin{frame}{Instrucciones}
   \begin{itemize}
     \item Abra en su navegador \href{http://localhost:5000}{http://localhost:5000}
-    \item Introduzca su b\'usqueda en la ``entrada'' y luego presionando el bot\'on
-          ``Buscar''
+    \item Introduzca su búsqueda en la ``entrada'' y luego presionando el botn ``Buscar''
   \end{itemize}
 \end{frame}
 
-\section*{Motor de b\'usqueda}
+\section*{Motor de búsqueda}
 
-\begin{frame}{Motor de b\'usqueda}
+\begin{frame}{Motor de búsqueda}
   El motor de búsqueda usa un modelo vectorial que computa para una {\it query}
   dada qué tan relevante es un documento determinado.
 \end{frame}
 
-\begin{frame}{Motor de b\'usqueda}
+\begin{frame}{Motor de búsqueda}
   Este modelo vectorial usa
     {\it TF-IDF} con {\it Cosine
       Similarity} para computar la relevancia.
@@ -174,7 +172,7 @@
   La idea es intentar estimar el ``ángulo'' comprendido entre
   el vector {\it query} y el vector {\it document}: mientras menor sea este
   ángulo, mayor ``similitud'' tendrán estos vectores. Para lo anterior se hace
-  uso de la f\'ormula:
+  uso de la frmula:
 
   \begin{equation}
     \cos \alpha = \frac{v_d \cdot v_q}{||v_d|| ~ ||v_q||} \nonumber
