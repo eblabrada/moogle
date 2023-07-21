@@ -1,4 +1,4 @@
-\documentclass[a4paper, 12pt]{report}
+\documentclass[a4paper, 12pt]{article}
 \usepackage[left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
 
 \usepackage{xcolor}
@@ -42,15 +42,17 @@
 
 \begin{document}
 
-\title{
-  \includegraphics[height=5cm]{images/matcom.jpg}  \\
-	{\bf \LARGE Moogle!}}
-\author{Facultad de Matem\'atica y Computaci\'on \\ Universidad de La Habana \\ \\ Eduardo Brito Labrada}
+\title{{\bf \LARGE Moogle!}}
+\author{Facultad de Matemática y Computación \\ Universidad de La Habana \\ \\ Eduardo Brito Labrada}
 \date{\today}
 
 \maketitle
 
-\section*{Una breve introducci\'on}
+\tableofcontents
+
+\section*{Una breve introducción}
+
+\addcontentsline{toc}{section}{Introducción}
 
 Moogle! es una aplicación {\it totalmente original} cuyo propósito es buscar
 inteligentemente un texto en un conjunto de documentos. Es una aplicación web,
@@ -64,15 +66,17 @@ componentes fundamentales:
 	\item {\tt \color{gray45} MoogleEngine} es una biblioteca de clases donde está\dots ehem\dots casi implementada la lógica del algoritmo de búsqueda.
 \end{itemize}
 
-\subsection*{?`Para qu\'e sirve?}
+\subsection*{¿Para qué sirve?}
+\addcontentsline{toc}{subsection}{¿Para qué sirve?}
 
 La idea original del proyecto es buscar en un conjunto de archivos de texto
 (con extensión {\tt \color{gray45} .txt}) que estén en la carpeta {\tt
 		\color{gray45}Content}.
 
-\subsection*{?`C\'omo usarlo?}
+\subsection*{¿Cómo usarlo?}
+\addcontentsline{toc}{subsection}{¿Cómo usarlo?}
 
-Primeramente, se aconseja a quien use esta aplicaci\'on tener instalado
+Primeramente, se aconseja a quien use esta aplicación tener instalado
 \href{https://es.wikipedia.org/wiki/Linux}{Linux}, ya que no se garantiza la
 misma eficiencia si esta en un dispositivo que use Windows. En caso de tener
 instalado Windows, puede optar por
@@ -80,6 +84,7 @@ instalado Windows, puede optar por
 	Subsystem for Linux (WSL)} que a\~nade funcionalidades de Linux en Windows.
 
 \subsubsection*{Instrucciones}
+\addcontentsline{toc}{subsubsection}{Instrucciones}
 
 Lo primero que el usuario debe hacer para poder usar este proyecto es
 \href{https://learn.microsoft.com/es-es/dotnet/core/install/}{instalar {\tt
@@ -88,17 +93,18 @@ dependiendo de su sistema operativo hacer lo siguiente:
 
 \begin{itemize}
 	\item {\bf Linux o WSL:} Debe tener instalado {\tt \color{gray45} make}. Si no lo tiene instalado
-	      puede instalarlo ejecutando el siguiente comando en el terminal {\tt \color{gray45}sudo apt update \&\& sudo apt install make}. Luego deber\'a ejecutar {\tt \color{gray45}make dev}
+	      puede instalarlo ejecutando el siguiente comando en el terminal {\tt \color{gray45}sudo apt update \&\& sudo apt install make}. Luego deberá ejecutar {\tt \color{gray45}make dev}
 
 	\item {\bf Windows:} Debería poder ejecutar este proyecto usando {\tt \color{gray45}dotnet watch run --project MoogleServer}
 \end{itemize}
 
-Despu\'es de hacer lo anterior abra en su navegador
-\href{http://localhost:5000}{http://localhost:5000} y podr\'as usar {\bf
-		Moogle!} introduciendo su b\'usqueda en la ``entrada'' y luego presionando el
-bot\'on ``Buscar''.
+Después de hacer lo anterior abra en su navegador
+\href{http://localhost:5000}{http://localhost:5000} y podrás usar {\bf
+		Moogle!} introduciendo su búsqueda en la ``entrada'' y luego presionando el
+botón ``Buscar''.
 
-\section*{Motor de b\'usqueda}
+\section*{Motor de búsqueda}
+\addcontentsline{toc}{section}{Motor de búsqueda}
 
 El motor de búsqueda usa un modelo vectorial que computa para una {\it query}
 dada qué tan relevante es un documento determinado. Este modelo vectorial usa
@@ -127,7 +133,7 @@ vector {\it document} y el vector {\it query} para lo cual se hace uso de {\it
 		Cosine Similarity}. La idea es intentar estimar el ``ángulo'' comprendido entre
 el vector {\it query} y el vector {\it document}: mientras menor sea este
 ángulo, mayor ``similitud'' tendrán estos vectores. Para lo anterior se hace
-uso de la f\'ormula:
+uso de la fórmula:
 
 \begin{equation}
 	\cos \alpha = \frac{v_d \cdot v_q}{||v_d|| ~ ||v_q||}
@@ -141,84 +147,89 @@ Siendo:
 	\item $||v||$ es la magnitud del vector $v$
 \end{itemize}
 
-\section*{Sobre la implementaci\'on}
+\section*{Sobre la implementación}
+\addcontentsline{toc}{section}{Implementación}
 
 \subsection*{\tt Utils.cs}
+\addcontentsline{toc}{subsection}{\tt Utils.cs}
 
-Esta clase tiene los m\'etodos auxiliares necesarios en el proyecto.
+Esta clase tiene los métodos auxiliares necesarios en el proyecto.
 
 \begin{itemize}
-	\item {\tt int EditDistance(string a, string b)}:  devuelve el menor n\'umero de operaciones de edici\'on
+	\item {\tt int EditDistance(string a, string b)}:  devuelve el menor número de operaciones de edición
 	      que se deben hacer para igualar ambas cadenas (las operaciones son insertar un caracter, eliminar un caracter,
-	      cambiar un caracter por otro). Para que esto funcione se hace uso de un algoritmo de Programaci\'on Din\'amica con una
-	      optimizaci\'on en memoria para que en lugar de tomar $O(n \times m)$ en memoria tome $O(2 \times min(n, m))$,
+	      cambiar un caracter por otro). Para que esto funcione se hace uso de un algoritmo de Programación Dinámica con una
+	      optimización en memoria para que en lugar de tomar $O(n \times m)$ en memoria tome $O(2 \times min(n, m))$,
 	      a pesar de esto la complejidad temporal sigue siendo la misma $O(n \times m)$, donde $n$ y $m$ son las longitudes de las cadenas.
 	\item {\tt int LongestCommonPrefix(string a, string b)}: esta clase recibe dos cadenas y
-	      devuelve el prefijo com\'un m\'as largo de dichas cadenas. La complejidad es $O(min(n, m))$ donde $n$ y $m$
+	      devuelve el prefijo común más largo de dichas cadenas. La complejidad es $O(min(n, m))$ donde $n$ y $m$
 	      son las longitudes de las cadenas.
 	\item {\tt double Distance(string a, string b)}: devuelve la similitud de dos cadenas usando el {\tt Edit Distance}, pero
-	      esto no siempre funciona como se espera, por ejemplo {\tt ebelabrada} est\'a tan cerca a {\tt eblabrada} como a {\tt zbelabrada},
-	      sin embargo deber\'ia devolver a {\tt eblabrada} que tiene un mayor prefijo com\'un. Para arreglar esto utilizo
+	      esto no siempre funciona como se espera, por ejemplo {\tt ebelabrada} está tan cerca a {\tt eblabrada} como a {\tt zbelabrada},
+	      sin embargo debería devolver a {\tt eblabrada} que tiene un mayor prefijo común. Para arreglar esto utilizo
 	      $\frac{ed}{lcp}$ donde $ed$ es el resultado de {\tt EditDistance} y $lcp$ es el resultado de {\tt LongestCommonPrefix}.
 	\item {\tt bool AreSimilar(string a, string b)}: devuelve {\tt true} si dos palabras son similares, considero dos palabras
-	      similares si su distancia de edici\'on es a lo m\'as $1$.
+	      similares si su distancia de edición es a lo más $1$.
 	\item {\tt string Capitalize(string word)}: devuelve a {\tt word} capitalizado.
 	\item {\tt string Tokenizer(string word)}: devuelve a {\tt word} eliminando todos los caracteres que no sean letras o digitos.
 	\item {\tt List<string> NormalizeText(string text)}: dado un texto devuelve una lista de todas las palabras dentro del texto,
-	      adem\'as las palabras en esta lista ser\'an devueltas ``tokenizadas".
+	      además las palabras en esta lista serán devueltas ``tokenizadas".
 	\item {\tt string[] GetNeed(string[] words)}: devuelve un {\tt Array} de las palabras que tienen a {\tt \^{}} delante.
 	\item {\tt string[] GetForbidden(string[] words)}: devuelve un {\tt Array} de las palabras que tienen a {\tt !} delante.
 	\item {\tt (string, int)[] GetMore(string[] words)}: devuelve un {\tt Array} de tuplas, en el primer ``item'' de la tupla
-	      est\'a la palabra que contiene {\tt *} delante y en el segundo ``item'' de la tupla contiene la cantidad de {\tt *} delante
+	      está la palabra que contiene {\tt *} delante y en el segundo ``item'' de la tupla contiene la cantidad de {\tt *} delante
 	      que contiene la palabra.
-	\item {\tt (string, string)[] GetNear(string[] words)}: devuelve un {\tt Array} de tuplas que contiene las palabras que est\'an relacionadas por
+	\item {\tt (string, string)[] GetNear(string[] words)}: devuelve un {\tt Array} de tuplas que contiene las palabras que están relacionadas por
 	      {\tt \~{}}
 	\item {\tt double Norm(Dictionary<string, double> vec)}: devuelve la norma de un vector.
 \end{itemize}
 
 \subsection*{\tt TFIDFAnalyzer.cs}
+\addcontentsline{toc}{subsection}{\tt TFIDFAnalyzer.cs}
 
-Esta es la clase m\'as importante. En ella se calcula el TF, el IDF de todas las
-palabras. Adem\'as de la relevancia de una palabra en un documento determinado.
+Esta es la clase más importante. En ella se calcula el TF, el IDF de todas las
+palabras. Además de la relevancia de una palabra en un documento determinado.
 
 \begin{itemize}
 	\item {\tt TFIDFAnalyzer(string path)}: dado un {\tt path} el constructor calcula el TF
 	      de cada palabra en cada documento, el IDF de todas las palabras, la relevancia de cada
-	      palabra en cada documento. Adem\'as, aqu\'i se guarda la informaci\'on calculada en los
-		      {\tt .json} que aparecen en la carpeta {\tt Database}, o se toma la informaci\'on guardada
-	      si ya esta calculada, de esta forma se evitan hacer los c\'alculos dos veces.
+	      palabra en cada documento. Además, aquí se guarda la información calculada en los
+		      {\tt .json} que aparecen en la carpeta {\tt Database}, o se toma la información guardada
+	      si ya esta calculada, de esta forma se evitan hacer los cálculos dos veces.
 	\item {\tt bool CanGet(string database = "../Database")}: devuelve {\tt true} si la cantidad
 	      de archivos que hay guardados en la carpeta {\tt Database} es la necesaria para tener {\bf toda}
-	      la informaci\'on de {\bf todos} los documentos en {\tt Content}. Esto significa que si se modifica/elimina/a\~nade
-	      al\'gun documento no va a devolver {\tt true}, o si no est\'an los {.json} necesarios
-	      para recuperar la informaci\'on tampoco devolver\'a {\tt true}.
-	\item {\tt void SaveInfo(string database = "../Database")}: se encarga de guardar toda la informaci\'on en los {\tt .json} dentro de la carpeta {\tt Database}.
-	\item {\tt void GetInfo(string database = "../Database")}: se encarga de obtener toda la informaci\'on guardada en los {\tt .json} que aparecen en la carpeta {\tt Database}.
+	      la información de {\bf todos} los documentos en {\tt Content}. Esto significa que si se modifica/elimina/a\~nade
+	      al\'gun documento no va a devolver {\tt true}, o si no están los {.json} necesarios
+	      para recuperar la información tampoco devolverá {\tt true}.
+	\item {\tt void SaveInfo(string database = "../Database")}: se encarga de guardar toda la información en los {\tt .json} dentro de la carpeta {\tt Database}.
+	\item {\tt void GetInfo(string database = "../Database")}: se encarga de obtener toda la información guardada en los {\tt .json} que aparecen en la carpeta {\tt Database}.
 	\item {\tt void DeleteInfo(string database = "../Database")}: se encarga de eliminar los {\tt .json} que aparecen en la carpeta {\tt Database}.
-	\item {\tt void ProcessDocuments(List<string> doc, int index)}: es un m\'etodo auxiliar que dado el documento como una lista de palabras devuelve calcula el TF de cada una de esas
+	\item {\tt void ProcessDocuments(List<string> doc, int index)}: es un método auxiliar que dado el documento como una lista de palabras devuelve calcula el TF de cada una de esas
 	      palabras dentro del documento dado. {\tt index} es el indice de este documento.
-	\item {\tt string Suggestion(string query)}: dada una {\it query} devuelve una sugerencia de b\'usqueda para esta {\it query}. Esta sugerencia es calculada
-	      usando el {\tt EditDistance}, por cada palabra de la {\it query} busca la palabra dentro del vocabulario que tenga menor distancia de edici\'on con ella.
-	\item {\tt double OperatorIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt \^{}} devuelve $1.0$ si todas las palabras en {\tt words}
-	      aparecen en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
-	\item {\tt double OperatorNotIn(string[] words, int index)}: este m\'etodo es utilizado para el operador {\tt !} devuelve $1.0$ si ninguna de las palabras en {\tt words}
-	      aparece en el documento con \'indice {\tt index}, de lo contrario devuelve $0.0$.
-	\item {\tt double OperatorMore((string, int)[] words, int index)}: dado las palabras que contienen {\tt *} y la cantidad de veces que aparece el {\tt *} delante, devuelve $\prod more * \ln(freq_{words})$ donde $more$ es la cantidad de veces que {\tt *} aparece delante de la palabra y $freq_{word}$ es la cantidad de veces que $word$ aparece en el documento con \'indice {\tt index}.
-	\item {\tt double OperatorNear((string, string)[] words, int index)}: por cada par de palabras en {\tt words} calcula la m\'inima distancia entre las apariciones de estas palabras en el documento con \'indice {\tt index}, esa m\'inima distancia (llamemosle $md$), la utilizo para calcular lo que le aporta a la respuesta, $\prod \frac{2}{\ln(md) + 1}$.
-	\item {\tt double ComputeRelevance(Dictionary<string,double> queryVec, int index, string[] need, string[] forb, (string, int)[] more, (string, string)[] near)} este m\'etodo recibe el vector de la {\it query}, el \'indice del documento en el que se va a analizar la query, las palabras que contienen {\tt \^{}}, {\tt !}, {\tt *} delante, y las que est\'an asociadas por {\tt \~{}}. Devuelve la relevancia de la query dentro del documento, utilizando la f\'ormula mencionada en {\bf Motor de b\'usqueda}, ese valor multiplicado por el resultado de los \'ultimos cuatro m\'etodos explicados anteriormente.
+	\item {\tt string Suggestion(string query)}: dada una {\it query} devuelve una sugerencia de búsqueda para esta {\it query}. Esta sugerencia es calculada
+	      usando el {\tt EditDistance}, por cada palabra de la {\it query} busca la palabra dentro del vocabulario que tenga menor distancia de edición con ella.
+	\item {\tt double OperatorIn(string[] words, int index)}: este método es utilizado para el operador {\tt \^{}} devuelve $1.0$ si todas las palabras en {\tt words}
+	      aparecen en el documento con índice {\tt index}, de lo contrario devuelve $0.0$.
+	\item {\tt double OperatorNotIn(string[] words, int index)}: este método es utilizado para el operador {\tt !} devuelve $1.0$ si ninguna de las palabras en {\tt words}
+	      aparece en el documento con índice {\tt index}, de lo contrario devuelve $0.0$.
+	\item {\tt double OperatorMore((string, int)[] words, int index)}: dado las palabras que contienen {\tt *} y la cantidad de veces que aparece el {\tt *} delante, devuelve $\prod more * \ln(freq_{words})$ donde $more$ es la cantidad de veces que {\tt *} aparece delante de la palabra y $freq_{word}$ es la cantidad de veces que $word$ aparece en el documento con índice {\tt index}.
+	\item {\tt double OperatorNear((string, string)[] words, int index)}: por cada par de palabras en {\tt words} calcula la mínima distancia entre las apariciones de estas palabras en el documento con índice {\tt index}, esa mínima distancia (llamemosle $md$), la utilizo para calcular lo que le aporta a la respuesta, $\prod \frac{2}{\ln(md) + 1}$.
+	\item {\tt double ComputeRelevance(Dictionary<string,double> queryVec, int index, string[] need, string[] forb, (string, int)[] more, (string, string)[] near)} este método recibe el vector de la {\it query}, el índice del documento en el que se va a analizar la query, las palabras que contienen {\tt \^{}}, {\tt !}, {\tt *} delante, y las que están asociadas por {\tt \~{}}. Devuelve la relevancia de la query dentro del documento, utilizando la fórmula mencionada en {\bf Motor de búsqueda}, ese valor multiplicado por el resultado de los últimos cuatro métodos explicados anteriormente.
 \end{itemize}
 
 \subsection*{\tt SearchEngine.cs}
+\addcontentsline{toc}{subsection}{\tt SearchEngine.cs}
 
 \begin{itemize}
-	\item {\tt SearchItem CalculateSnippet(SearchItem item, string query, int len = 100)}: este m\'etodo calcula el mejor snippet para la {\it query} dada, para hacer esto utilizo un algoritmo de {\it Sliding Window} que busca cual "ventana" de texto tiene m\'as palabras "similares" a las palabras en la {\it query}.
-	\item {\tt (List<SearchItem>, string) FindItems(string query, double factor = 1.0)}: devuelve una tupla que contiene una lista de {\tt SearchItem} que contiene los resultados de la b\'usqueda y la sugerencia para esta {\it query}. Adem\'as, recibe un valor {\tt factor} que se utiliza para decir que tan relevante son estos resultados para la b\'usqueda. Esto se utiliza principalmente porque adem\'as de buscar los resultados de la {\it query} hecha por el usuario, esto tambi\'en devuelve los resultados para la sugerencia que se le da al usuario pero este {\it score} debe ser devuelto con menor valor que el {\it score} de la query del usuario por lo tanto, lo divido entre {\tt factor}. Devuelve los resultados ordenados de mayor a menor por el {\it score}.
+	\item {\tt SearchItem CalculateSnippet(SearchItem item, string query, int len = 100)}: este método calcula el mejor snippet para la {\it query} dada, para hacer esto utilizo un algoritmo de {\it Sliding Window} que busca cual "ventana" de texto tiene más palabras "similares" a las palabras en la {\it query}.
+	\item {\tt (List<SearchItem>, string) FindItems(string query, double factor = 1.0)}: devuelve una tupla que contiene una lista de {\tt SearchItem} que contiene los resultados de la búsqueda y la sugerencia para esta {\it query}. Además, recibe un valor {\tt factor} que se utiliza para decir que tan relevante son estos resultados para la búsqueda. Esto se utiliza principalmente porque además de buscar los resultados de la {\it query} hecha por el usuario, esto también devuelve los resultados para la sugerencia que se le da al usuario pero este {\it score} debe ser devuelto con menor valor que el {\it score} de la query del usuario por lo tanto, lo divido entre {\tt factor}. Devuelve los resultados ordenados de mayor a menor por el {\it score}.
 \end{itemize}
 
 \subsection*{\tt Moogle.cs}
+\addcontentsline{toc}{subsection}{\tt Moogle.cs}
 
 \begin{itemize}
-	\item {\tt SearchResult Query(string query, bool alsoSuggestions = true)}: devuelve los resultados de la b\'usqueda, adem\'as {\tt alsoSuggestions = true} significa que devolver\'a los resultados tambi\'en para la sugerencia, cuando el valor de {\tt alsoSuggestions = false} solo buscar\'a para la {\it query} hecha por el usuario.
+	\item {\tt SearchResult Query(string query, bool alsoSuggestions = true)}: devuelve los resultados de la búsqueda, además {\tt alsoSuggestions = true} significa que devolverá los resultados también para la sugerencia, cuando el valor de {\tt alsoSuggestions = false} solo buscará para la {\it query} hecha por el usuario.
 \end{itemize}
 
 \end{document}
