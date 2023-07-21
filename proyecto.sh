@@ -1,16 +1,32 @@
 #!/bin/bash
 
-compileReport() {
-  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Informe/ Informe/report.tex </dev/null
-  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Informe/ Informe/report.tex </dev/null
+report() {
+  cd Informe
+  if [ -z "$1" ]
+  then
+    pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape report.tex </dev/null
+    pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape report.tex </dev/null
+  else
+    $1  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape report.tex </dev/null
+    $1  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape report.tex </dev/null
+  fi   
+  cd ..
 }
 
-compilePresentation() {
-  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Presentacion/ Presentacion/presentation.tex </dev/null
-  pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape -output-directory Presentacion/ Presentacion/presentation.tex </dev/null
+slides() {
+  cd Presentacion
+  if [ -z "$1" ]
+  then
+    pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape presentation.tex </dev/null
+    pdflatex  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape presentation.tex </dev/null
+  else
+    $1  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape presentation.tex </dev/null
+    $1  -synctex=1 -interaction=nonstopmode -file-line-error -recorder -shell-escape presentation.tex </dev/null
+  fi
+  cd ..
 }
 
-latexclean() {
+clean() {
   cd Informe
   rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz
   cd ..
@@ -19,34 +35,58 @@ latexclean() {
   cd ..
 }
 
-latexbuild() {
-  compileReport;
-  compilePresentation;
-	cp Informe/report.pdf report.pdf
+all_docs() {
+  report;
+  slides;
+  cp Informe/report.pdf report.pdf
 	cp Presentacion/presentation.pdf presentation.pdf
-  latexclean;
+  clean;
 }
 
 veryclean() {
-	latexclean;
-  rm -f report.pdf presentation.pdf 
+	clean;
+  rm -f 
+  rm -f Presentacion/presentation.pdf Informe/report.pdf report.pdf presentation.pdf 
 }
 
-showReport() {
+show_report() {
   if [ ! -f  "Informe/report.pdf" ]
-    then compileReport;
-  fi  
-  xdg-open Informe/report.pdf
-}
-
-showPresentation() {
-  if [ ! -f  "Presentacion/presentation.pdf" ]
-    then compilePresentation;
+  then 
+    report;
   fi
-  xdg-open Presentacion/presentation.pdf
+
+  if [ -z "$1" ]
+  then
+    xdg-open Informe/report.pdf
+  else
+    $1 Informe/report.pdf
+  fi
 }
 
-menu() {
+show_slides() {
+  if [ ! -f  "Presentacion/presentation.pdf" ]
+  then
+    slides;
+  fi
+   
+  if [ -z "$1" ]
+  then
+    xdg-open Presentacion/presentation.pdf
+  else
+    $1 Presentacion/presentation.pdf
+  fi  
+}
+
+run() {
+  xdg-open https://localhost:5001/
+  dotnet watch run --project MoogleServer
+}
+
+build() {
+  dotnet build
+}
+
+help() {
   echo "This script builds Moogle and its documentation"
   echo ""
   echo "build       - to build Moogle"
@@ -57,33 +97,9 @@ menu() {
   echo "veryclean   - to clean up all documentation and all unnecessary files"
   echo "show_report - to show Moogle's report"
   echo "show_slides - to show Moogle's slides"
-  echo "docs        - to build all Moogle's documentation and clean up all unnecessary files"
+  echo "all_docs    - to build all Moogle's documentation and clean up all unnecessary files"
   echo "help        - to show this information"
   echo ""
 }
 
-if [ $1 = build ]
-  then dotnet build
-elif [ $1 = run ]
-  then dotnet watch run --project MoogleServer
-elif [ $1 = report ]
-  then compileReport;
-elif [ $1 = slides ]
-  then compilePresentation;
-elif [ $1 = clean ]
-  then latexclean;
-elif [ $1 = veryclean ]
-  then veryclean;
-elif [ $1 = help ]
-  then menu;
-elif [ $1 = show_report ]
-  then showReport;
-elif [ $1 = show_slides ]
-  then showPresentation;
-elif [ $1 = docs ]
-  then latexbuild;
-else
-  then:
-    echo "Invalid command!"
-    menu;
-fi
+"$@"
