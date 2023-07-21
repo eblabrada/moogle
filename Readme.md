@@ -90,3 +90,22 @@ Están implementados y se pueden usar sin problemas de ningún tipo los siguient
 ## Otras funcionalidades
 
 Se le harán determinadas sugerencias de acuerdo con su búsqueda. Además de hacer sugerencias para la búsqueda también busca los resultados para esta sugerencia, pero las devuelve con un menor `score`.
+
+## Prácticas Laborales Primer Año
+
+Con motivo de las prácticas laborales de primer año se han añadido varios subdirectorios adicionales:
+
+* **Informe:** este directorio contiene el fichero `report.tex` que es el informe del proyecto elaborado en LaTex.
+* **Presentacion:** este directorio contiene el fichero `presentation.tex` que es la presentación del proyecto elaborado en LaTex.
+* **Script:** este directorio contiene el fichero `proyecto.sh` que es un script en bash que tiene las siguientes opciones:
+  
+  * `build`: para compilar el proyecto.
+  * `run`: para compilar y ejecutar el proyecto, y abrir en el navegador la página web donde se deberán realizar las búsquedas.
+  * `report`: para compilar el `.tex` y generar el `.pdf` del informe del proyecto.
+  * `slides`: para compilar el `.tex` y generar el `.pdf` de la presentación del proyecto.
+  * `clean`: para eliminar todos los ficheros auxiliares que no forman parte del contenido del repositorio y se generan en la compilación o ejecución del proyecto, o en la generación de los `.pdf` del reporte o la presentación
+  * `veryclean`: para eliminar todos los ficheros auxiliares que no forman parte del contenido del repositorio así como los `.pdf` generados.
+  * `show_report`: ejecuta un programa que permite visualizar el informe, si el fichero en `.pdf` no existe será generado. Esta opción puede recibir como parámetro el comando de la herramienta de visualización que se quiera utilizar, por defecto se abrirá con `xdg-open`.
+  * `show_slides`: ejecuta un programa que permite visualizar la presentación, si el fichero en `.pdf` no existe será generado. Esta opción puede recibir como parámetro el comando de la herramienta de visualización que se quiera utilizar, por defecto se abrirá con `xdg-open`.
+  * `all_docs`: para compilar el `.tex` y generar el `.pdf` tanto del informe como de la presentación del proyecto, y copiarla para el directorio principal del proyecto, además eliminará todos los ficheros auxiliares que no forman parte del contenido del repositorio.
+  * `help`: muestra el menú de opciones del script.
