@@ -28,7 +28,7 @@ slides() {
 
 clean() {
   cd Informe
-  rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz
+  rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz report.toc
   cd ..
   cd Presentacion
   rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk
