@@ -1,4 +1,4 @@
-\documentclass[a4paper, 12pt]{article}
+\documentclass[a4paper, 12pt]{report}
 \usepackage[left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
 
 \usepackage{xcolor}
@@ -48,22 +48,41 @@
 
 \maketitle
 
+\begin{abstract}
+	En ocasiones tenemos una serie de libros, reportes o artículos (documentos en general) 
+	almacenados en nuestra computadora y queremos investigar sobre algún tema en particular, 
+	pero no sabemos específicamente cuáles de estos documentos nos ayudarán en la investigación
+	(ni siquiera sabemos si nos servirán realmente), entonces se hace necesario explorar cada 
+	uno de los documentos y verificar si contienen determinadas palabras claves que nos 
+	puedan interesar. 
+	
+	Este proceso puede llevar mucho tiempo si lo hacemos
+	manualmente, y precisamente por este y otros fines nace la idea de {\bf Moogle!} que tiene
+	como propósito buscar inteligentemente un texto en un conjunto de documentos. La aplicación
+	utiliza en su motor de búsqueda un modelo vectorial conocido como TF-IDF, que es una estadística
+	que intenta reflejar cuán importante es una palabra (o un texto en general) dentro de conjunto de
+	documentos.
+\end{abstract}
+
 \tableofcontents
 
-\section*{Una breve introducción}
+\newpage
 
+\section*{Introducción}
 \addcontentsline{toc}{section}{Introducción}
+
+\subsection*{¿Qué es Moogle?}
+\addcontentsline{toc}{subsection}{¿Qué es Moogle?}
 
 Moogle! es una aplicación {\it totalmente original} cuyo propósito es buscar
 inteligentemente un texto en un conjunto de documentos. Es una aplicación web,
-desarrollada con tecnología {\tt \color{gray45}.NET Core 6.0}, específicamente
-usando Blazor como {\it framework} web para la interfaz gráfica, y en el
-lenguaje {\tt \color{gray45} C\#}. La aplicación está dividida en dos
-componentes fundamentales:
+desarrollada con tecnología {\tt .NET Core 6.0}, específicamente usando Blazor como 
+{\it framework} web para la interfaz gráfica, y en el lenguaje {\tt C\#}. La aplicación 
+está dividida en dos componentes fundamentales:
 
 \begin{itemize}
-	\item {\tt \color{gray45} MoogleServer} es un servidor web que renderiza la interfaz gráfica y sirve los resultados.
-	\item {\tt \color{gray45} MoogleEngine} es una biblioteca de clases donde está\dots ehem\dots casi implementada la lógica del algoritmo de búsqueda.
+	\item {\tt MoogleServer} es un servidor web que renderiza la interfaz gráfica y sirve los resultados.
+	\item {\tt MoogleEngine} es una biblioteca de clases donde está implementada la lógica del algoritmo de búsqueda.
 \end{itemize}
 
 \subsection*{¿Para qué sirve?}
@@ -99,18 +118,21 @@ dependiendo de su sistema operativo hacer lo siguiente:
 \end{itemize}
 
 Después de hacer lo anterior abra en su navegador
-\href{http://localhost:5000}{http://localhost:5000} y podrás usar {\bf
-		Moogle!} introduciendo su búsqueda en la ``entrada'' y luego presionando el
-botón ``Buscar''.
+\href{http://localhost:5000}{http://localhost:5000} y podrás usar {\bf Moogle!}
+introduciendo su búsqueda en la ``entrada'' y luego presionando el botón
+``Buscar''.
 
-\section*{Motor de búsqueda}
-\addcontentsline{toc}{section}{Motor de búsqueda}
+\section*{Métodos}
+\addcontentsline{toc}{section}{Métodos}
+
+\subsection*{Motor de búsqueda}
+\addcontentsline{toc}{subsection}{Motor de búsqueda}
 
 El motor de búsqueda usa un modelo vectorial que computa para una {\it query}
 dada qué tan relevante es un documento determinado. Este modelo vectorial usa
 	{\it Term Frequency and Inverse Document Frequency (TF-IDF)} con {\it Cosine
-		Similarity} para computar la relevancia de una {\it query}. Para computar el vector {\it TF-IDF}
-se hace uso de la fórmula:
+		Similarity} para computar la relevancia de una {\it query}. Para computar el
+vector {\it TF-IDF} se hace uso de la fórmula:
 
 \begin{equation}
 	TFIDF = (\frac{tf}{tw}) \times \ln(\frac{td}{dt})
@@ -124,9 +146,10 @@ En esta fórmula tenemos que:
 	\item $dt$ es la cantidad de documentos que contienen el término.
 \end{itemize}
 
-{\bf \color{red} Nota importante}: dado que $\frac{td}{dt}$ puede causar problemas por la
-división entre $0$ decidí que si $dt = 0$ luego $TFIDF = 0$, tiene sentido hacer esto ya
-que si $dt = 0$ el término no aparece en ningún documento.\\
+\fcolorbox{orange}{white}{
+	\parbox{14.8cm}{Dado que $\frac{td}{dt}$ puede causar problemas por la
+	división entre $0$ decidí que si $dt = 0$ luego $TFIDF = 0$, tiene sentido hacer esto ya
+	que si $dt = 0$ el término no aparece en ningún documento. } }\\ \\
 
 Después de hacer lo anterior necesitamos calcular la ``similitud'' entre el
 vector {\it document} y el vector {\it query} para lo cual se hace uso de {\it
@@ -147,26 +170,27 @@ Siendo:
 	\item $||v||$ es la magnitud del vector $v$
 \end{itemize}
 
-\section*{Sobre la implementación}
-\addcontentsline{toc}{section}{Implementación}
+\subsection*{Implementación}
+\addcontentsline{toc}{subsection}{Implementación}
 
-\subsection*{\tt Utils.cs}
-\addcontentsline{toc}{subsection}{\tt Utils.cs}
+\subsubsection*{\tt Utils.cs}
 
-Esta clase tiene los métodos auxiliares necesarios en el proyecto.
+En esta clase se encuentran implementados los métodos auxiliares necesarios en el proyecto.
+A modo de resumen, podemos ver lo que hace cada uno de estos métodos y la idea detrás de la
+implementación:
 
 \begin{itemize}
 	\item {\tt int EditDistance(string a, string b)}:  devuelve el menor número de operaciones de edición
 	      que se deben hacer para igualar ambas cadenas (las operaciones son insertar un caracter, eliminar un caracter,
-	      cambiar un caracter por otro). Para que esto funcione se hace uso de un algoritmo de Programación Dinámica con una
+	      cambiar un caracter por otro). Aquí se hace uso de un algoritmo de Programación Dinámica con una
 	      optimización en memoria para que en lugar de tomar $O(n \times m)$ en memoria tome $O(2 \times min(n, m))$,
 	      a pesar de esto la complejidad temporal sigue siendo la misma $O(n \times m)$, donde $n$ y $m$ son las longitudes de las cadenas.
-	\item {\tt int LongestCommonPrefix(string a, string b)}: esta clase recibe dos cadenas y
+	\item {\tt int LongestCommonPrefix(string a, string b)}: este método recibe dos cadenas y
 	      devuelve el prefijo común más largo de dichas cadenas. La complejidad es $O(min(n, m))$ donde $n$ y $m$
 	      son las longitudes de las cadenas.
-	\item {\tt double Distance(string a, string b)}: devuelve la similitud de dos cadenas usando el {\tt Edit Distance}, pero
-	      esto no siempre funciona como se espera, por ejemplo {\tt ebelabrada} está tan cerca a {\tt eblabrada} como a {\tt zbelabrada},
-	      sin embargo debería devolver a {\tt eblabrada} que tiene un mayor prefijo común. Para arreglar esto utilizo
+	\item {\tt double Distance(string a, string b)}: devuelve la similitud de dos cadenas usando el {\tt Edit Distance}. Debido a que esto no siempre
+				funciona como se espera, por ejemplo {\tt ebelabrada} está tan cerca a {\tt eblabrada} como a {\tt zbelabrada},
+	      sin embargo debería devolver a {\tt eblabrada} que tiene un mayor prefijo común; se hace necesario utilizar
 	      $\frac{ed}{lcp}$ donde $ed$ es el resultado de {\tt EditDistance} y $lcp$ es el resultado de {\tt LongestCommonPrefix}.
 	\item {\tt bool AreSimilar(string a, string b)}: devuelve {\tt true} si dos palabras son similares, considero dos palabras
 	      similares si su distancia de edición es a lo más $1$.
@@ -184,11 +208,11 @@ Esta clase tiene los métodos auxiliares necesarios en el proyecto.
 	\item {\tt double Norm(Dictionary<string, double> vec)}: devuelve la norma de un vector.
 \end{itemize}
 
-\subsection*{\tt TFIDFAnalyzer.cs}
-\addcontentsline{toc}{subsection}{\tt TFIDFAnalyzer.cs}
+\subsubsection*{\tt TFIDFAnalyzer.cs}
 
-Esta es la clase más importante. En ella se calcula el TF, el IDF de todas las
-palabras. Además de la relevancia de una palabra en un documento determinado.
+Esta es la clase más importante, es considerada el núcleo del funcionamiento del motor de búsqueda, 
+en ella se calcula el TF, y el IDF de todas las palabras. Además de la relevancia de una palabra en 
+un documento determinado.
 
 \begin{itemize}
 	\item {\tt TFIDFAnalyzer(string path)}: dado un {\tt path} el constructor calcula el TF
@@ -217,16 +241,14 @@ palabras. Además de la relevancia de una palabra en un documento determinado.
 	\item {\tt double ComputeRelevance(Dictionary<string,double> queryVec, int index, string[] need, string[] forb, (string, int)[] more, (string, string)[] near)} este método recibe el vector de la {\it query}, el índice del documento en el que se va a analizar la query, las palabras que contienen {\tt \^{}}, {\tt !}, {\tt *} delante, y las que están asociadas por {\tt \~{}}. Devuelve la relevancia de la query dentro del documento, utilizando la fórmula mencionada en {\bf Motor de búsqueda}, ese valor multiplicado por el resultado de los últimos cuatro métodos explicados anteriormente.
 \end{itemize}
 
-\subsection*{\tt SearchEngine.cs}
-\addcontentsline{toc}{subsection}{\tt SearchEngine.cs}
+\subsubsection*{\tt SearchEngine.cs}
 
 \begin{itemize}
 	\item {\tt SearchItem CalculateSnippet(SearchItem item, string query, int len = 100)}: este método calcula el mejor snippet para la {\it query} dada, para hacer esto utilizo un algoritmo de {\it Sliding Window} que busca cual "ventana" de texto tiene más palabras "similares" a las palabras en la {\it query}.
 	\item {\tt (List<SearchItem>, string) FindItems(string query, double factor = 1.0)}: devuelve una tupla que contiene una lista de {\tt SearchItem} que contiene los resultados de la búsqueda y la sugerencia para esta {\it query}. Además, recibe un valor {\tt factor} que se utiliza para decir que tan relevante son estos resultados para la búsqueda. Esto se utiliza principalmente porque además de buscar los resultados de la {\it query} hecha por el usuario, esto también devuelve los resultados para la sugerencia que se le da al usuario pero este {\it score} debe ser devuelto con menor valor que el {\it score} de la query del usuario por lo tanto, lo divido entre {\tt factor}. Devuelve los resultados ordenados de mayor a menor por el {\it score}.
 \end{itemize}
 
-\subsection*{\tt Moogle.cs}
-\addcontentsline{toc}{subsection}{\tt Moogle.cs}
+\subsubsection*{\tt Moogle.cs}
 
 \begin{itemize}
 	\item {\tt SearchResult Query(string query, bool alsoSuggestions = true)}: devuelve los resultados de la búsqueda, además {\tt alsoSuggestions = true} significa que devolverá los resultados también para la sugerencia, cuando el valor de {\tt alsoSuggestions = false} solo buscará para la {\it query} hecha por el usuario.
