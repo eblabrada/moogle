@@ -28,10 +28,10 @@ slides() {
 
 clean() {
   cd Informe
-  rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz report.toc
+  rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz report.toc report.pdf
   cd ..
   cd Presentacion
-  rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk
+  rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk presentation.pdf
   cd ..
   cd MoogleServer
   
@@ -59,8 +59,7 @@ all_docs() {
 
 veryclean() {
 	clean;
-  rm -f 
-  rm -f Presentacion/presentation.pdf Informe/report.pdf report.pdf presentation.pdf 
+  rm -f report.pdf presentation.pdf 
 }
 
 show_report() {
@@ -101,19 +100,28 @@ build() {
 }
 
 help() {
-  echo "This script builds Moogle and its documentation"
+  echo "Usage: bash proyecto.sh <command> [options]"
   echo ""
-  echo "build       - to build Moogle"
-  echo "run         - to run Moogle"
-  echo "report      - to build Moogle's report"
-  echo "slides      - to build Moogle's slides"
-  echo "clean       - to clean up the latex's build process"
-  echo "veryclean   - to clean up all documentation and all unnecessary files"
-  echo "show_report - to show Moogle's report"
-  echo "show_slides - to show Moogle's slides"
-  echo "all_docs    - to build all Moogle's documentation and clean up all unnecessary files"
-  echo "help        - to show this information"
+  echo "proyecto.sh is a bash script that provides commands for build and run Moogle!"
+  echo "and generate all the documentation related to it."
+  
   echo ""
+  echo "List of commands:"
+  echo "  build                 - to build Moogle"
+  echo "  run                   - to compile and run Moogle, and open in the browser the search page"
+  echo "  report                - to generate Moogle's report"
+  echo "  report [compiler]     - to generate Moogle's report using 'compiler'"
+  echo "  slides                - to generate Moogle's slides"
+  echo "  slides [compiler]     - to generate Moogle's slides using 'compiler'"
+  echo "  clean                 - to clean up the files generated in the build process"
+  echo "  veryclean             - to clean up all documentation and all auxiliary files"
+  echo "  show_report [viewer]  - to show Moogle's report using 'viewer'"
+  echo "  show_slides [viewer]  - to show Moogle's slides using 'viewer'"
+  echo "  all_docs              - to build all Moogle's documentation and clean up all auxiliary files"
+  echo "  help                  - to show this information"
+  echo ""
+  echo ""
+  echo "                                                       This script has Super MatCom Powers :)"
 }
 
 cd ..

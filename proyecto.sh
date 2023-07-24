@@ -28,10 +28,10 @@ slides() {
 
 clean() {
   cd Informe
-  rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz report.toc
+  rm -f report.aux report.fls report.log report.fdb_latexmk report.out report.synctex.gz report.toc report.pdf
   cd ..
   cd Presentacion
-  rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk
+  rm -f presentation.aux presentation.fls presentation.log presentation.nav presentation.synctex.gz presentation.snm presentation.toc presentation.fdb_latexmk presentation.pdf
   cd ..
   cd MoogleServer
   
@@ -59,8 +59,7 @@ all_docs() {
 
 veryclean() {
 	clean;
-  rm -f 
-  rm -f Presentacion/presentation.pdf Informe/report.pdf report.pdf presentation.pdf 
+  rm -f report.pdf presentation.pdf 
 }
 
 show_report() {
