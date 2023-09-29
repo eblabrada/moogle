@@ -4,6 +4,7 @@ public static class SearchEngine
 {
   public static TFIDFAnalyzer allDocuments = new TFIDFAnalyzer("../Content");
 
+  // use sliding window algorithm for calculate the best snippet for each document.
   private static SearchItem CalculateSnippet(SearchItem item, string query, int len = 100)
   {
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
@@ -101,8 +102,8 @@ public static class SearchEngine
     List<(double, int)> items = new List<(double, int)>();
     for (int i = 0; i < allDocuments.numberOfDocuments; i++)
     {
-      double similarity = allDocuments.ComputeRelevance(ref QTF, i, need, forb, more, near);
-      
+      double similarity = allDocuments.ComputeRelevance(QTF, i, need, forb, more, near);
+
       if (similarity == 0) continue;
 
       if (flag == false)
@@ -110,7 +111,7 @@ public static class SearchEngine
         Console.WriteLine("The results are:");
         flag = true;
       }
-      
+
       Console.WriteLine($"  * {allDocuments.documentTitle[i]} with similarity {similarity}");
       items.Add((similarity, i));
     }

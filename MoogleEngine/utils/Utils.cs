@@ -2,6 +2,12 @@ namespace MoogleEngine;
 
 public static class Utils
 {
+  // given two string 'a' and 'b' returns the minimum number
+  // of operations needed to make equal both strings using
+  // three operations: insert a character, erase a character,
+  // and change the character in some position. This problem
+  // is commonly known as "Edit Distance problem". The time
+  // complexity for this algorithm is O(nm).
   public static int EditDistance(string a, string b)
   {
     if (a.Length < b.Length) {
@@ -42,6 +48,9 @@ public static class Utils
     return dp[n & 1, m];
   }
 
+  // given two strings 'a' and 'b' returns the longest common 
+  // prefix of both strings. The time complexity of this algorithm
+  // is O(min(n, m)).
   public static int LongestCommonPrefix(string a, string b)
   {
     int cnt = 0;
@@ -59,6 +68,10 @@ public static class Utils
     return cnt;
   }
 
+  // given two strings 'a' and 'b' returns the similarity
+  // of both strings. I used a heuristic for determinate the
+  // similarity of both strings. The heuristic uses the cocient
+  // between EditDistance and LongestCommonPrefix.
   public static double Distance(string a, string b)
   {
     int lcp = LongestCommonPrefix(a, b);
@@ -66,6 +79,8 @@ public static class Utils
     return (double)EditDistance(a, b) / (double)LongestCommonPrefix(a, b);
   }
 
+  // given two strings 'a' and 'b' returns true if both
+  // string are considered similars (EditDistance results is <= 1).
   public static bool AreSimilar(string a, string b)
   {
     a = a.ToLower(); b = b.ToLower();
@@ -76,6 +91,7 @@ public static class Utils
     return false;
   }
 
+  // given a string 'word' returns this string capitalized
   public static string Capitalize(string word)
   {
     if (word.Length == 0) return word;
@@ -83,6 +99,8 @@ public static class Utils
     return res;
   }
 
+  // given a string 'word' returns this string removing
+  // all characters that are not letters or digits.  
   public static string Tokenizer(string word)
   {
     string res = "";
@@ -96,6 +114,8 @@ public static class Utils
     return res.ToLower();
   }
 
+  // given a text returns a list of the words of this text
+  // all the words are returned tokenized. 
   public static List<string> NormalizeText(string text)
   {
     char[] splitters = { ' ', ',', '.', ':', ';', '\t', '\n' };
@@ -112,6 +132,7 @@ public static class Utils
     return res;
   }
 
+  // given a list of words returns the words that have '^' before.
   public static string[] GetNeed(string[] words)
   {
     List<string> res = new List<string>();
@@ -125,6 +146,7 @@ public static class Utils
     return res.ToArray();
   }
 
+  // given a list of words returns the words that have '!' before.
   public static string[] GetForbidden(string[] words)
   {
     List<string> res = new List<string>();
@@ -138,6 +160,9 @@ public static class Utils
     return res.ToArray();
   }
 
+  // given a list of words returns the words that have '*' before,
+  // the words are returned as a tuple (frequency, word), frequency
+  // is the number of '*' before 'word'.
   public static (string, int)[] GetMore(string[] words)
   {
     List<(string, int)> res = new List<(string, int)>();
@@ -156,6 +181,8 @@ public static class Utils
     return res.ToArray();
   }
 
+  // give a list of words returns the words are asociated with
+  // '~' operator. 
   public static (string, string)[] GetNear(string[] words)
   {
     List<(string, string)> res = new List<(string, string)>();
@@ -169,6 +196,7 @@ public static class Utils
     return res.ToArray();
   }
 
+  // given a vector returns the norm.
   public static double Norm(Dictionary<string, double> vec)
   {
     double res = 0.0;

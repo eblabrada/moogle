@@ -15,8 +15,11 @@ public class TFIDFAnalyzer
   public List<List<string>> fdocuments = new List<List<string>>();
   public Dictionary<int, string> documentTitle = new Dictionary<int, string>();
   public int numberOfDocuments = 0;
-  public List<Trie> documentTrie = new List<Trie>();
 
+  // given the path of documents: calculate the TF of each word
+  // of each document, the IDF of all words, the relevance of each
+  // word in each document. Save all the information in '.json' for
+  // future uses
   public TFIDFAnalyzer(string path)
   {
     this.path = path;
@@ -70,21 +73,6 @@ public class TFIDFAnalyzer
         }
       }
 
-      // Console.WriteLine("Adding information to the Trie...\n");
-
-      // for (int i = 0; i < numberOfDocuments; i++)
-      // {
-      //   documentTrie.Add(new Trie());
-      // }
-
-      // for (int i = 0; i < fdocuments.Count(); i++)
-      // {
-      //   foreach (var word in fdocuments[i])
-      //   {
-      //     documentTrie[i].Insert(word);
-      //   }
-      // }
-
       SaveInfo();
 
       Console.WriteLine("All is working fine!");
@@ -95,6 +83,8 @@ public class TFIDFAnalyzer
     }
   }
 
+  // check if all the information are saved before, in this case 
+  // returns true
   public bool CanGet(string database = "../Database")
   {
     if (Directory.GetFiles(database, "*.json").Length != 9)
@@ -142,6 +132,7 @@ public class TFIDFAnalyzer
     return false;
   }
 
+  // save all information in '.json' for future use.
   public void SaveInfo(string database = "../Database")
   {
     File.WriteAllText(database + "/TF.json", JsonSerializer.Serialize(TF));
@@ -152,9 +143,9 @@ public class TFIDFAnalyzer
     File.WriteAllText(database + "/documents.json", JsonSerializer.Serialize(documents));
     File.WriteAllText(database + "/fdocuments.json", JsonSerializer.Serialize(fdocuments));
     File.WriteAllText(database + "/documentTitle.json", JsonSerializer.Serialize(documentTitle));
-    // File.WriteAllText(database + "/documentTrie", JsonSerializer.Serialize(documentTrie));
   }
 
+  // get the information saved before.
   public void GetInfo(string database = "../Database")
   {
     string jsonString = File.ReadAllText(database + "/TF.json");
@@ -173,11 +164,10 @@ public class TFIDFAnalyzer
     this.fdocuments = JsonSerializer.Deserialize<List<List<string>>>(jsonString)!;
     jsonString = File.ReadAllText(database + "/documentTitle.json");
     this.documentTitle = JsonSerializer.Deserialize<Dictionary<int, string>>(jsonString)!;
-    // jsonString = File.ReadAllText(database + "/documentTrie.json");
-    // this.documentTrie = JsonSerializer.Deserialize<List<Trie>>(jsonString)!;
     this.numberOfDocuments = documents.Count();
   }
 
+  // delete information saved before.
   public void DeleteInfo(string database = "../Database")
   {
     File.Delete(database + "/TF.json");
@@ -188,9 +178,9 @@ public class TFIDFAnalyzer
     File.Delete(database + "/documents.json");
     File.Delete(database + "/fdocuments.json");
     File.Delete(database + "/documentTitle.json");
-    // File.Delete(database + "/documentTrie.json");
   }
 
+  // process the TF of all the words into the 'index'-th document.
   private void ProcessDocuments(List<string> doc, int index)
   {
     for (int i = 0; i < doc.Count(); i++)
@@ -216,6 +206,8 @@ public class TFIDFAnalyzer
     }
   }
 
+  // given a query returns a suggestion for this search,
+  // this method uses EditDistance.
   public string Suggestion(string query)
   {
     char[] splitters = { ' ', '\t', '\n' };
@@ -269,6 +261,8 @@ public class TFIDFAnalyzer
     return res;
   }
 
+  // returns true if all the words with '^' before appear in the
+  // 'index'-th document.  
   private double OperatorIn(string[] words, int index)
   {
     for (int i = 0; i < words.Length; i++)
@@ -281,6 +275,8 @@ public class TFIDFAnalyzer
     return 1.0;
   }
 
+  // returns true if all the words with '!' before not appear in the
+  // 'index'-th document.
   private double OperatorNotIn(string[] words, int index)
   {
     for (int i = 0; i < words.Length; i++)
@@ -293,6 +289,8 @@ public class TFIDFAnalyzer
     return 1.0;
   }
 
+  // given the tuple (frequency, word) returns frequency * ln(freq_word) for 
+  // each word.
   private double OperatorMore((string, int)[] words, int index)
   {
     double res = 1.0;
@@ -300,7 +298,7 @@ public class TFIDFAnalyzer
     {
       string word = words[i].Item1;
       int more = words[i].Item2;
-      if (vocabulary[word].Contains(index))
+      if (vocabulary.ContainsKey(word) && vocabulary[word].Contains(index))
       {
         res *= more * Math.Log(frequency[index][word]);
       }
@@ -308,6 +306,9 @@ public class TFIDFAnalyzer
     return res;
   }
 
+  // for each pair of words calculates the minimum distance between
+  // the some ocurrence of these words in the 'index'-th document.
+  // returns the product of contribution of this result to the answer.
   private double OperatorNear((string, string)[] words, int index)
   {
     double res = 1.0;
@@ -331,7 +332,8 @@ public class TFIDFAnalyzer
     return res;
   }
 
-  public double ComputeRelevance(ref Dictionary<string, double> queryVec, int index,
+  // compute the relevance of 'query' in the 'index'-th document.
+  public double ComputeRelevance(Dictionary<string, double> queryVec, int index,
     string[] need, string[] forb, (string, int)[] more, (string, string)[] near)
   {
     double num = 0.0, den = 0.0;
@@ -354,22 +356,6 @@ public class TFIDFAnalyzer
     }
 
     double res = num / den;
-
-    // Dictionary<string, bool> marked = new Dictionary<string, bool>();
-    // foreach (var x in forb)
-    // {
-    //   marked[x] = true;
-    // }
-
-    // double trieRes = 0.0;
-    // foreach (var word in queryVec.Keys)
-    // {
-    //   if (marked.ContainsKey(word)) continue;
-
-    //   trieRes += documentTrie[index].PrefixRelevance(word);
-    // }
-
-    // res += Math.Min(0.5, trieRes);
 
     res *= OperatorIn(need, index);
     res *= OperatorNotIn(forb, index);

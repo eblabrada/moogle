@@ -75,7 +75,7 @@ public class Trie
 
       if (lcp >= expectedLen)
       {
-        res += ((double)lcp / expectedLen) * Math.Log(nodeCnt[cur] + 1);
+        res += (double)lcp / expectedLen * Math.Log(nodeCnt[cur] + 1);
       }
     }
 
